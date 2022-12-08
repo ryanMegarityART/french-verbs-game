@@ -21,6 +21,10 @@ If a player reaches 20 points they win
 
 ## technical choices
 
+frontend:
+
 My current frontend build-tool of choice is Vite which I have used to initalise a React + TypeScript frontend
+
+I have added react-bootsrap to the project for easy styling since the UI/UX is not the highest priority in this project
 
 ## time spent
