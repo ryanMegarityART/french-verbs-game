@@ -1,7 +1,7 @@
 # french-verbs-game
 
 ## game rules
-The game will display a French word, the player needs to find the english translation of this word.
+The game will display a French word, the player needs to find the English translation of this word.
 
 They will be provided with two additional pieces of information:
 1. The first letter of the translated word
@@ -9,7 +9,7 @@ They will be provided with two additional pieces of information:
 
 The player starts with 10 points
 
-When the player makes a mistae they lose a point, when they find the wor they gain a point
+When the player makes a mistake they lose a point, when they find the word they gain a point
 
 If a player reaches 0 points they lose 
 
