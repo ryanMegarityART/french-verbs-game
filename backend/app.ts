@@ -3,7 +3,8 @@ import cors from "cors";
 import fs from 'fs';
 import path from 'path';
 import { Prisma, PrismaClient } from '@prisma/client'
-import { translateText } from 'puppeteer-google-translate';
+// import { translateText } from 'puppeteer-google-translate';
+const { Translate } = require('@google-cloud/translate').v2;
 
 interface Verb {
     id: string;
@@ -32,14 +33,35 @@ app.get("/verb", async (req, res) => {
     // TODO: make request to translate on the fly
     // const opt = { to: 'en', from: 'fr' , timeout: 10000, headless: true };
     // translate from English to Esperanto
-    translateText('text', { to: 'en', from: 'fr', timeout: 10000, headless: false }).then((result) => {
-        // result: teksto
-        console.log("translate result: ", result)
-    });
+    // translateText('text', { to: 'en', from: 'fr', timeout: 10000, headless: true }).then((result) => {
+    //     // result: teksto
+    //     console.log("translate result: ", result)
+    // });
+
+    // Creates a client
+    const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_API_KEY, projectId: "french-verb-game" });
+
+    /**
+     * TODO(developer): Uncomment the following lines before running the sample.
+     */
+    const text = randomVerb[0].verb;
+    const target = 'en-uk';
+
+    // Translates the text into the target language. "text" can be a string for
+    // translating a single piece of text, or an array of strings for translating
+    // multiple texts.
+    let translations = [];
+    try {
+        [translations] = await translate.translate(text, target);
+    } catch (e) {
+        console.log("error translating via API : ", e)
+    }
+    const translation = Array.isArray(translations) ? translations[0] : translations;
+    console.log(`${text} => (${target}) ${translation}`);
 
     res.send({
         verb: randomVerb[0].verb,
-        translation: "look",
+        translation: translation,
     });
 });
 // endpoint to load in the verbs to the database from verbs.txt file
