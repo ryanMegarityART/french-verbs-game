@@ -3,7 +3,7 @@ import cors from "cors";
 import fs from 'fs';
 import path from 'path';
 import { Prisma, PrismaClient } from '@prisma/client'
-// import { translateText } from 'puppeteer-google-translate';
+import bodyParser from 'body-parser';
 const { Translate } = require('@google-cloud/translate').v2;
 
 interface Verb {
@@ -17,6 +17,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(cors({ origin: '*' }));
+app.use(bodyParser.json());
 
 // main endpoint for application to request a french verb and its translation
 app.get("/verb", async (req, res) => {
@@ -38,18 +39,12 @@ app.get("/verb", async (req, res) => {
     //     console.log("translate result: ", result)
     // });
 
-    // Creates a client
+    // Creates a google translate api client
     const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_API_KEY, projectId: "french-verb-game" });
 
-    /**
-     * TODO(developer): Uncomment the following lines before running the sample.
-     */
     const text = randomVerb[0].verb;
     const target = 'en-uk';
 
-    // Translates the text into the target language. "text" can be a string for
-    // translating a single piece of text, or an array of strings for translating
-    // multiple texts.
     let translations = [];
     try {
         [translations] = await translate.translate(text, target);
@@ -58,12 +53,45 @@ app.get("/verb", async (req, res) => {
     }
     const translation = Array.isArray(translations) ? translations[0] : translations;
     console.log(`${text} => (${target}) ${translation}`);
-
+    await prisma.$disconnect();
     res.send({
         verb: randomVerb[0].verb,
         translation: translation,
     });
 });
+
+// endpoint to log an attempt
+app.post("/attempt", async (req, res) => {
+    const prisma = new PrismaClient();
+
+    console.log("attempt body: ", req.body)
+
+    // get verb from db to use id as FK
+    const verbRow = await prisma.verb.findFirst({ where: { verb: req.body.verb } });
+
+    try {
+        // write attempt to db
+        await prisma.answer.create({
+            data: {
+                verbId: verbRow.id,
+                correct: !!req.body.correct,
+                userId: null
+            },
+            include: {
+                verb: true,
+                user: true
+            }
+        })
+    }
+    catch (e) {
+        console.log("Error creating answer in db: ", e)
+    }
+
+    await prisma.$disconnect();
+
+    res.send();
+})
+
 // endpoint to load in the verbs to the database from verbs.txt file
 app.get("/load", (req, res) => {
 

@@ -18,6 +18,11 @@ interface VerbResponse {
   translation: string;
 }
 
+interface Attempt {
+  verb: string;
+  correct: boolean;
+}
+
 export interface GuessVerbProps {
   score: number;
   setScore: Dispatch<SetStateAction<number>>;
@@ -46,16 +51,32 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
     translationWordsArray.map((translationWord, i) => {
       transationHintString =
         transationHintString +
-        translation[0].toString() +
-        "_ ".repeat(translation.length - 1);
+        translationWord[0].toString() +
+        "_ ".repeat(translationWord.length - 1);
       if (i < translationWordsArray.length - 1) {
         transationHintString + " ";
       }
     });
     return (
       transationHintString +
-      `(${translation.length - translationWordsArray.length})`
+      `(${translation.length - translationWordsArray.length + 1})`
     );
+  };
+
+  const postAttempt = async (attempt: Attempt) => {
+    const response = await fetch(ENDPOINT + "/attempt", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(attempt), // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -63,6 +84,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
     console.log("answer: ", translation, "guess: ", guess);
     if (guess === translation) {
       setShowSuccessAlert(true);
+      postAttempt({ verb, correct: true });
       setTimeout(() => {
         setShowSuccessAlert(false);
       }, 1500);
@@ -71,6 +93,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setGuess("");
     } else {
       setShowErrorAlert(true);
+      postAttempt({ verb, correct: false });
       setTimeout(() => {
         setShowErrorAlert(false);
       }, 1500);

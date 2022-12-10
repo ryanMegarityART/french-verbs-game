@@ -1,6 +1,6 @@
-# french-verbs-game
+# French Verbs Game
 
-## game rules
+## Game Rules
 The game will display a French word, the player needs to enter the English translation of this word.
 
 They will be provided with two additional pieces of information:
@@ -15,11 +15,50 @@ If a player reaches 0 points they lose
 
 If a player reaches 20 points they win
 
-## install and setup 
+## Install and Setup
 
-## starting the application
+Pre-requisites to run on local machine:
 
-## technical choices
+```
+mySQL server - follow install instructions here https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/
+nodeJS (v16 has been used to develop this project)
+```
+
+To run locally you will need to create a .env file in the backend directory (i.e. backend/.env). This will contain the following secret values:
+
+```
+DATABASE_URL="mysql://${username}:${password}@localhost:3306/french-verbs-game"
+PORT=4000
+GOOGLE_TRANSLATE_API_KEY=""
+```
+
+Note: you will need to obtain an API key to use the Google Translate API, this can be provided on request if needed 
+
+## Starting the Application
+
+The frontend and backend need to be started from separate shells 
+
+Start the frontend:
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Start the backend:
+
+```
+cd frontend
+npm install
+npm run serve
+```
+
+The first time running the application, you should make a HTTP Get Request to 'http://localhost:4000/load' this will load all of the verbs from the verbs.txt into your local mySQL instance.
+
+You should then be able to see the game in your browser at http://localhost:5173
+
+## Technical Choices
 
 frontend:
 
@@ -37,4 +76,4 @@ To view and query the database I use mySQL Workbench
 
 I have added Prisma as my ORM library (this is actually my first time using it, I have previously used TypeORM and not found it particularly great)
 
-## time spent
+## Time Spent

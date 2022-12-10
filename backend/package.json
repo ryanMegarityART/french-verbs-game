@@ -21,9 +21,8 @@
     "@google-cloud/translate": "^7.0.4",
     "@prisma/client": "^4.7.1",
     "@types/cors": "^2.8.13",
+    "body-parser": "^1.20.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "puppeteer": "^19.4.0",
-    "puppeteer-google-translate": "^1.0.6"
+    "express": "^4.18.2"
   }
 }
