@@ -193,6 +193,7 @@ app.get("/leaderboard", authenticateToken, async (req, res) => {
             userId
         ORDER BY 
             NumberCorrect DESC
+        LIMIT 3
         `,
     );
     await prisma.$disconnect();
