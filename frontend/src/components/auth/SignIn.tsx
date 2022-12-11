@@ -7,6 +7,7 @@ import frenchFlag from "../../assets/french-flag.svg";
 import { ErrorAlert } from "../shared/ErrorAlert";
 
 export const SignIn = () => {
+  // @ts-ignore
   const [user, setUser] = useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

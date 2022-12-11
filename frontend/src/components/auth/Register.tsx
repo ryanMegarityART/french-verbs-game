@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
   const navigate = useNavigate();
+  // @ts-ignore
   const [user, setUser] = useOutletContext();
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");

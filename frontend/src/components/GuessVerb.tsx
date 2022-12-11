@@ -30,7 +30,9 @@ export interface GuessVerbProps {
 
 export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const navigate = useNavigate();
+  // @ts-ignore
   const [user, setUser] = useOutletContext();
+
   const [verb, setVerb] = useState<string>("");
   const [translation, setTranslation] = useState<string>("");
   const [error, setError] = useState<string>("");
