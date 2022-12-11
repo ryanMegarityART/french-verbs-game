@@ -9,6 +9,7 @@ interface Leaderboard {
 }
 
 export const Leaderboard = () => {
+  // @ts-ignore
   const [user, setUser] = useOutletContext();
   const [error, setError] = useState<string>("");
   const [leaderboard, setLeaderboard] = useState<Leaderboard[]>();
