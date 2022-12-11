@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { SuccessAlert } from "./SuccessAlert";
 import { ErrorAlert } from "./ErrorAlert";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 interface VerbResponse {
   verb: string;
@@ -29,21 +29,39 @@ export interface GuessVerbProps {
 }
 
 export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
+  const navigate = useNavigate();
   const [user, setUser] = useOutletContext();
   const [verb, setVerb] = useState<string>("");
   const [translation, setTranslation] = useState<string>("");
-
+  const [error, setError] = useState<string>("");
   const [guess, setGuess] = useState<string>("");
-
   const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
 
   const getVerbAndTranslation = async () => {
-    const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb");
-    const respJSON: VerbResponse = await resp.json();
+    if (user) {
+      console.log(user);
+      const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb", {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          Authentication: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!resp.ok) {
+        if (resp.status === 401 || resp.status === 403) {
+          setUser();
+          localStorage.removeItem("user");
+          navigate("/sign-in");
+        }
+        const error = await resp.text();
+        return setError(error);
+      }
+      const respJSON: VerbResponse = await resp.json();
 
-    setVerb(respJSON.verb);
-    setTranslation(respJSON.translation);
+      setVerb(respJSON.verb);
+      setTranslation(respJSON.translation);
+    }
   };
 
   const transationHintString = (translation: string) => {
@@ -65,19 +83,29 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   };
 
   const postAttempt = async (attempt: Attempt) => {
-    const response = await fetch(import.meta.env.VITE_ENDPOINT + "/attempt", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(attempt), // body data type must match "Content-Type" header
-    });
-    // return response.json(); // parses JSON response into native JavaScript objects
+    if (user) {
+      const response = await fetch(import.meta.env.VITE_ENDPOINT + "/attempt", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        headers: {
+          Authentication: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(attempt), // body data type must match "Content-Type" header
+      });
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("user");
+          navigate("/sign-in");
+        }
+        const error = await response.text();
+        return setError(error);
+      }
+    }
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -103,11 +131,14 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   };
 
   useEffect(() => {
-    getVerbAndTranslation();
-  }, []);
+    if (user) {
+      getVerbAndTranslation();
+    }
+  }, [user]);
 
   return (
     <div>
+      {error && <ErrorAlert errorMessage={error} />}
       {verb && translation && (
         <div className="guess mt-3">
           <h2>{verb}</h2>

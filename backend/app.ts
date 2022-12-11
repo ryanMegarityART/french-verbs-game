@@ -6,6 +6,7 @@ import { Prisma, PrismaClient } from '@prisma/client'
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { authenticateToken } from "./helpers/auth";
 const { Translate } = require('@google-cloud/translate').v2;
 
 interface Verb {
@@ -22,7 +23,7 @@ app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 
 // main endpoint for application to request a french verb and its translation
-app.get("/verb", async (req, res) => {
+app.get("/verb", authenticateToken, async (req, res) => {
     const prisma = new PrismaClient();
 
     // Query random verb from table
@@ -64,7 +65,7 @@ app.get("/verb", async (req, res) => {
 });
 
 // endpoint to log an attempt
-app.post("/attempt", async (req, res) => {
+app.post("/attempt", authenticateToken, async (req, res) => {
     const prisma = new PrismaClient();
 
     console.log("attempt body: ", req.body)
