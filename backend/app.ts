@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { Prisma, PrismaClient } from '@prisma/client'
 import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 const { Translate } = require('@google-cloud/translate').v2;
 
 interface Verb {
@@ -56,6 +58,7 @@ app.get("/verb", async (req, res) => {
     await prisma.$disconnect();
     res.send({
         verb: randomVerb[0].verb,
+        verbId: randomVerb[0].id,
         translation: translation,
     });
 });
@@ -73,13 +76,15 @@ app.post("/attempt", async (req, res) => {
         // write attempt to db
         await prisma.answer.create({
             data: {
-                verbId: verbRow.id,
+                verb: {
+                    connect: { id: verbRow.id }
+                },
                 correct: !!req.body.correct,
-                userId: null
-            },
-            include: {
-                verb: true,
-                user: true
+                user: {
+                    connect: {
+                        username: req.body.username
+                    }
+                }
             }
         })
     }
@@ -157,6 +162,94 @@ app.get("/load", (req, res) => {
         }
     });
 })
+
+// Register
+app.post("/register", async (req, res) => {
+
+    console.log("register body: ", req.body)
+
+    // Get user input
+    const { username, email, password } = req.body;
+
+    // Validate user input
+    if (!(email && password && username)) {
+        res.status(400).send("All input is required");
+    }
+
+    const prisma = new PrismaClient();
+
+    // check if user already exist
+    // Validate if user exist in our database
+    const oldUserByUsername = await prisma.user.findUnique({ where: { username } });
+    if (oldUserByUsername) {
+        return res.status(409).send("User Already Exist. Please Login or choose a different username");
+    }
+    const oldUserByEmail = await prisma.user.findUnique({ where: { email } });
+    if (oldUserByEmail) {
+        return res.status(409).send("Email Already Exist. Please Login or choose a different email address");
+    }
+
+    //Encrypt user password
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+        data: {
+            username,
+            email,
+            password: encryptedPassword
+        }
+    })
+
+    // Create token
+    const token = jwt.sign(
+        { user_id: user.id, email },
+        process.env.TOKEN_KEY,
+        {
+            expiresIn: "2h",
+        }
+    );
+
+    await prisma.$disconnect();
+
+    // return new user
+    res.status(201).json({ ...user, token });
+});
+
+// Login
+app.post("/login", async (req, res) => {
+
+    console.log("login body: ", req.body)
+
+    // Get user input
+    const { email, password } = req.body;
+
+    // Validate user input
+    if (!(email && password)) {
+        res.status(400).send("All input is required");
+    }
+
+    const prisma = new PrismaClient();
+
+    // Validate if user exist in our database
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+        // Create token
+        const token = jwt.sign(
+            { user_id: user.id, email },
+            process.env.TOKEN_KEY,
+            {
+                expiresIn: "2h",
+            }
+        );
+
+        await prisma.$disconnect();
+
+        // user
+        return res.status(200).json({ ...user, token });
+    }
+    res.status(400).send("Invalid Credentials");
+});
 
 
 app.listen(port, () => {

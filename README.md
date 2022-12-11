@@ -24,15 +24,24 @@ mySQL server - follow install instructions here https://dev.mysql.com/doc/mysql-
 nodeJS (v16 has been used to develop this project)
 ```
 
-To run locally you will need to create a .env file in the backend directory (i.e. backend/.env). This will contain the following secret values:
+To run locally you will need to create a .env file in the backend directory (i.e. backend/.env) and a .env fiel in the frontend directory (i.e. frontend/.env). This will contain the following secret values:
+
+backend .env:
 
 ```
 DATABASE_URL="mysql://${username}:${password}@localhost:3306/french-verbs-game"
 PORT=4000
 GOOGLE_TRANSLATE_API_KEY=""
+TOKEN_KEY="LOCALKEY"
 ```
 
 Note: you will need to obtain an API key to use the Google Translate API, this can be provided on request if needed 
+
+frontend .env:
+
+```
+VITE_ENDPOINT="http://localhost:4000"
+```
 
 ## Starting the Application
 
@@ -51,8 +60,11 @@ Start the backend:
 ```
 cd frontend
 npm install
+npx prisma migrate dev --name init
 npm run serve
 ```
+
+You only need to run the prisma migration command the first time starying the application (this will create the schema and all the necessary tables in your local mysql instance)
 
 The first time running the application, you should make a HTTP Get Request to 'http://localhost:4000/load' this will load all of the verbs from the verbs.txt into your local mySQL instance.
 

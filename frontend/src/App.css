@@ -1,7 +1,5 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -20,6 +18,20 @@
 }
 
 .guess {
+  padding: 2em;
   font-size: 1.25em;
 }
 
+a {
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}

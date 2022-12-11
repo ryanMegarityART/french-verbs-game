@@ -10,8 +10,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { SuccessAlert } from "./SuccessAlert";
 import { ErrorAlert } from "./ErrorAlert";
-
-const ENDPOINT = "http://localhost:4000";
+import { useOutletContext } from "react-router-dom";
 
 interface VerbResponse {
   verb: string;
@@ -21,6 +20,7 @@ interface VerbResponse {
 interface Attempt {
   verb: string;
   correct: boolean;
+  username: string;
 }
 
 export interface GuessVerbProps {
@@ -29,6 +29,7 @@ export interface GuessVerbProps {
 }
 
 export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
+  const [user, setUser] = useOutletContext();
   const [verb, setVerb] = useState<string>("");
   const [translation, setTranslation] = useState<string>("");
 
@@ -38,7 +39,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
 
   const getVerbAndTranslation = async () => {
-    const resp = await fetch(ENDPOINT + "/verb");
+    const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb");
     const respJSON: VerbResponse = await resp.json();
 
     setVerb(respJSON.verb);
@@ -64,7 +65,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   };
 
   const postAttempt = async (attempt: Attempt) => {
-    const response = await fetch(ENDPOINT + "/attempt", {
+    const response = await fetch(import.meta.env.VITE_ENDPOINT + "/attempt", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -76,15 +77,15 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(attempt), // body data type must match "Content-Type" header
     });
-    return response.json(); // parses JSON response into native JavaScript objects
+    // return response.json(); // parses JSON response into native JavaScript objects
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("answer: ", translation, "guess: ", guess);
+    console.log("verb: ", verb, "answer: ", translation, "guess: ", guess);
     if (guess === translation) {
       setShowSuccessAlert(true);
-      postAttempt({ verb, correct: true });
+      postAttempt({ verb, correct: true, username: user.username });
       setTimeout(() => {
         setShowSuccessAlert(false);
       }, 1500);
@@ -93,7 +94,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setGuess("");
     } else {
       setShowErrorAlert(true);
-      postAttempt({ verb, correct: false });
+      postAttempt({ verb, correct: false, username: user.username });
       setTimeout(() => {
         setShowErrorAlert(false);
       }, 1500);
@@ -131,7 +132,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       )}
       <div className="mt-3" style={{ minHeight: "5em" }}>
         {showSuccessAlert && <SuccessAlert />}
-        {showErrorAlert && <ErrorAlert />}
+        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟" />}
       </div>
     </div>
   );
