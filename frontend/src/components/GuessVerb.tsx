@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 import { SuccessAlert } from "./shared/SuccessAlert";
 import { ErrorAlert } from "./shared/ErrorAlert";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { checkAuthenticationResponse } from "../helpers/token";
 
 interface VerbResponse {
   verb: string;
@@ -47,13 +48,12 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
         },
       });
       if (!resp.ok) {
-        if (resp.status === 401 || resp.status === 403) {
-          setUser();
-          localStorage.removeItem("user");
-          navigate("/sign-in");
-        }
-        const error = await resp.text();
-        return setError(error);
+        return await checkAuthenticationResponse(
+          resp,
+          setUser,
+          setError,
+          navigate
+        );
       }
       const respJSON: VerbResponse = await resp.json();
 
@@ -96,12 +96,12 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       });
 
       if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem("user");
-          navigate("/sign-in");
-        }
-        const error = await response.text();
-        return setError(error);
+        return await checkAuthenticationResponse(
+          response,
+          setUser,
+          setError,
+          navigate
+        );
       }
     }
   };
