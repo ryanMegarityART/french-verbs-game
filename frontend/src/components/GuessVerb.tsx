@@ -5,11 +5,10 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { DisplayTranslation } from "./DisplayTranslation";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { SuccessAlert } from "./SuccessAlert";
-import { ErrorAlert } from "./ErrorAlert";
+import { SuccessAlert } from "./shared/SuccessAlert";
+import { ErrorAlert } from "./shared/ErrorAlert";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 interface VerbResponse {
@@ -40,7 +39,6 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
 
   const getVerbAndTranslation = async () => {
     if (user) {
-      console.log(user);
       const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {

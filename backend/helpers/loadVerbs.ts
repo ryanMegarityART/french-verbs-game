@@ -40,7 +40,6 @@ fs.readFile(filePath, { encoding: 'utf-8' }, async (err, data) => {
                     // P2022: Unique constraint failed
                     // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
                     if (e.code === 'P2002') {
-                        // console.log("verb: ", verbsToAdd[i], " has already been loaded into the db.")
                         skipped.push(verbsToAdd[i])
                         continue;
                     }

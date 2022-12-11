@@ -1,28 +1,22 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import frenchFlag from "../assets/french-flag.svg";
-import { ErrorAlert } from "./ErrorAlert";
+import frenchFlag from "../../assets/french-flag.svg";
+import { ErrorAlert } from "../shared/ErrorAlert";
+import { useNavigate } from "react-router-dom";
 
-export const SignIn = () => {
+export const Register = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useOutletContext();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  let navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-
-  useEffect(() => {
-    if (user) {
-      navigate("/play", { replace: true });
-    }
-  }, [user]);
-
-  const signIn = async (e: FormEvent<HTMLFormElement>) => {
+  const register = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch(import.meta.env.VITE_ENDPOINT + "/login", {
+    const response = await fetch(import.meta.env.VITE_ENDPOINT + "/register", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -35,12 +29,11 @@ export const SignIn = () => {
       body: JSON.stringify({
         email,
         password,
+        username,
       }), // body data type must match "Content-Type" header
     });
     if (!response.ok) {
-      const errorMessage = await response.text();
-      console.log("errorMessage: ", errorMessage);
-      return setError(errorMessage);
+      setError(await response.text());
     }
     const userResp = await response.json();
     setUser(userResp);
@@ -57,7 +50,7 @@ export const SignIn = () => {
         </h1>
       </div>
       {error && <ErrorAlert errorMessage={error} />}
-      <Form className="mt-3" onSubmit={signIn}>
+      <Form className="mt-3" onSubmit={register}>
         <Form.Group className="m-3" controlId="formBasicEmail">
           <Form.Control
             type="email"
@@ -65,6 +58,20 @@ export const SignIn = () => {
             value={email}
             onChange={(e: any) => {
               setEmail(e.target.value);
+            }}
+          />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="m-3" controlId="formBasicUsername">
+          <Form.Control
+            type="text"
+            placeholder="Enter username"
+            value={username}
+            onChange={(e: any) => {
+              setUsername(e.target.value);
             }}
           />
         </Form.Group>
@@ -80,15 +87,15 @@ export const SignIn = () => {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Sign In
+          Register
         </Button>
       </Form>
       <div className="mt-3">
         <p>
           <span>
-            Don't have an account?{" "}
-            <a style={{ color: "blue", cursor: "pointer" }} href="/register">
-              register here
+            Already have an account?{" "}
+            <a style={{ color: "blue", cursor: "pointer" }} href="/sign-in">
+              sign in here
             </a>
           </span>
         </p>

@@ -3,10 +3,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ErrorPage } from "./components/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SignIn } from "./components/SignIn";
+import { SignIn } from "./components/auth/SignIn";
 import { Leaderboard } from "./components/Leaderboard";
 import { MyStats } from "./components/MyStats";
-import { Register } from "./components/Register";
+import { Register } from "./components/auth/Register";
 import { Root } from "./Root";
 import "./App.css";
 
