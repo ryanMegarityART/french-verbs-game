@@ -66,7 +66,12 @@ npm run serve
 
 You only need to run the prisma migration command the first time starying the application (this will create the schema and all the necessary tables in your local mysql instance)
 
-The first time running the application, you should make a HTTP Get Request to 'http://localhost:4000/load' this will load all of the verbs from the verbs.txt into your local mySQL instance.
+The first time running the application, you should run the following to load the verbs into the database:
+
+```
+cd backend
+npm run load-verbs
+```
 
 You should then be able to see the game in your browser at http://localhost:5173
 
