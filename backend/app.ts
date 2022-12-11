@@ -177,6 +177,38 @@ app.post("/login", async (req, res) => {
     res.status(400).send("Invalid Credentials");
 });
 
+app.get("/leaderboard", authenticateToken, async (req, res) => {
+    const prisma = new PrismaClient();
+    const leaderboard = await prisma.$queryRawUnsafe(
+        // DO NOT pass in or accept user input here
+        `
+        SELECT 
+        Count(correct) AS numberCorrect,
+        username
+        FROM 
+            Answer a
+        INNER JOIN 
+            User u ON a.userId = u.id
+        GROUP BY 
+            userId
+        ORDER BY 
+            NumberCorrect DESC
+        `,
+    );
+    await prisma.$disconnect();
+
+    console.log(leaderboard);
+
+    // query raw returns BigInts which cannot be parsed as standard
+    (BigInt.prototype as any).toJSON = function () {
+        return this.toString();
+    };
+
+    return res.status(200).json(leaderboard);
+
+
+})
+
 
 app.listen(port, () => {
     console.log(`Application started and is running on port ${port}.`);

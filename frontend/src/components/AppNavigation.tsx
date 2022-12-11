@@ -29,7 +29,6 @@ export const AppNavigation = () => {
             <Nav className="justify-content-end flex-grow-1 pe-3">
               <Nav.Link href={`/play`}>Play / Restart ▶️</Nav.Link>
               <Nav.Link href={`/leaderboard`}>Leaderboard 🏆</Nav.Link>
-              <Nav.Link href={`/my-stats`}>My Stats 📊</Nav.Link>
               <Nav.Link
                 style={{ color: "red" }}
                 onClick={() => {

@@ -5,7 +5,6 @@ import { ErrorPage } from "./components/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SignIn } from "./components/auth/SignIn";
 import { Leaderboard } from "./components/Leaderboard";
-import { MyStats } from "./components/MyStats";
 import { Register } from "./components/auth/Register";
 import { Root } from "./Root";
 import "./App.css";
@@ -23,10 +22,6 @@ const router = createBrowserRouter([
       {
         path: "leaderboard",
         element: <Leaderboard />,
-      },
-      {
-        path: "my-stats",
-        element: <MyStats />,
       },
       {
         path: "sign-in",
