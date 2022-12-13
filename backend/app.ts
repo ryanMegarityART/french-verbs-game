@@ -66,7 +66,7 @@ app.post("/attempt", authenticateToken, async (req, res) => {
     const verbRow = await prisma.verb.findFirst({ where: { verb: req.body.verb } });
 
     if(!verbRow) {
-        res.status(500).json({error: "Verb not found"})
+        return res.status(500).json({error: "Verb not found"})
     }
 
     try {
@@ -134,7 +134,7 @@ app.post("/register", async (req, res) => {
     // Create token
     const token = jwt.sign(
         { user_id: user.id, email },
-        process.env.TOKEN_KEY,
+        process.env.TOKEN_KEY || "",
         {
             expiresIn: "2h",
         }
@@ -162,13 +162,13 @@ app.post("/login", async (req, res) => {
     const prisma = new PrismaClient();
 
     // Validate if user exist in our database
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user: any = await prisma.user.findUnique({ where: { email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
         const token = jwt.sign(
             { user_id: user.id, email },
-            process.env.TOKEN_KEY,
+            process.env.TOKEN_KEY || "",
             {
                 expiresIn: "2h",
             }

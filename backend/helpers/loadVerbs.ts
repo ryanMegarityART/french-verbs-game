@@ -35,7 +35,7 @@ fs.readFile(filePath, { encoding: 'utf-8' }, async (err, data) => {
                     },
                 })
                 added.push(verbsToAdd[i])
-            } catch (e) {
+            } catch (e : any) {
                 if (e instanceof Prisma.PrismaClientKnownRequestError) {
                     // P2022: Unique constraint failed
                     // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
