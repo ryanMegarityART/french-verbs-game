@@ -1,11 +1,11 @@
 # serverless.yml
- 
+
 service: french-verbs-app
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-offline
- 
+
 provider:
   name: aws
   runtime: nodejs16.x
@@ -13,13 +13,15 @@ provider:
   region: eu-west-2
 
 custom:
-  serverlessPluginTypescript:
-    tsConfigFileLocation: './tsconfig.json'
- 
+  webpack:
+    webpackConfig: "webpack.config.js" # Name of webpack configuration file
+    # includeModules: false # Node modules configuration for packaging
+    # packager: "npm" # Packager that will be used to package your external modules
+
 functions:
   app:
     handler: app.handler
     events:
-      - http: 
+      - http:
           method: ANY
           path: /{proxy+}
