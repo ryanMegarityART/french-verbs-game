@@ -23,6 +23,6 @@ functions:
     handler: app.handler
     events:
       - http:
-          method: ANY
           path: /{proxy+}
+          method: ANY
           cors: true

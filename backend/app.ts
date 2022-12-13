@@ -20,8 +20,10 @@ interface Verb {
 const app = express();
 // const port = process.env.PORT || 4000;
 
-app.use(cors({ origin: '*' }));
+app.use(cors());
 app.use(bodyParser.json());
+
+app.options('*', cors()) // include before other routes
 
 // main endpoint for application to request a french verb and its translation
 app.get("/verb", authenticateToken, async (req, res) => {
