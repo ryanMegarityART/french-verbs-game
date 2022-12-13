@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { authenticateToken } from "./helpers/auth";
 const { Translate } = require('@google-cloud/translate').v2;
+import serverless from 'serverless-http';
 
 interface Verb {
     id: string;
@@ -17,7 +18,7 @@ interface Verb {
 }
 
 const app = express();
-const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 4000;
 
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
@@ -63,6 +64,10 @@ app.post("/attempt", authenticateToken, async (req, res) => {
 
     // get verb from db to use id as FK
     const verbRow = await prisma.verb.findFirst({ where: { verb: req.body.verb } });
+
+    if(!verbRow) {
+        res.status(500).json({error: "Verb not found"})
+    }
 
     try {
         // write attempt to db
@@ -211,6 +216,8 @@ app.get("/leaderboard", authenticateToken, async (req, res) => {
 })
 
 
-app.listen(port, () => {
-    console.log(`Application started and is running on port ${port}.`);
-});
+// app.listen(port, () => {
+//     console.log(`Application started and is running on port ${port}.`);
+// });
+
+module.exports.handler = serverless(app);

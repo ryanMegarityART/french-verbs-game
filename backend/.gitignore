@@ -1,4 +1,8 @@
+# Env
 .env
+
+#Build
+.build
 
 # Logs
 logs

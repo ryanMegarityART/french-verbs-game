@@ -15,6 +15,8 @@ If a player reaches 0 points they lose
 
 If a player reaches 20 points they win
 
+## Live Deployment
+
 ## Install and Setup
 
 Pre-requisites to run on local machine:
@@ -94,3 +96,5 @@ To view and query the database I use mySQL Workbench
 I have added Prisma as my ORM library (this is actually my first time using it, I have previously used TypeORM and not found it particularly great)
 
 ## Time Spent
+
+Roughly 15 - 20 hours
