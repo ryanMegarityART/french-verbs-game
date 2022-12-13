@@ -5,6 +5,7 @@ service: french-verbs-app
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-webpack-prisma
 
 provider:
   name: aws
@@ -17,6 +18,9 @@ custom:
     webpackConfig: "webpack.config.js" # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     # packager: "npm" # Packager that will be used to package your external modules
+    packagerOptions:
+      scripts:
+        - prisma generate
 
 functions:
   app:

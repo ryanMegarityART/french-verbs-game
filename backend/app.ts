@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
-import fs from 'fs';
-import path from 'path';
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
