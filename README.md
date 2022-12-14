@@ -15,6 +15,12 @@ If a player reaches 0 points they lose
 
 If a player reaches 20 points they win
 
+## Live Deployment
+
+https://french-verbs-game.vercel.app/
+
+Deployed using Vercel for the frontend and Heroku for the backend
+
 ## Install and Setup
 
 Pre-requisites to run on local machine:
@@ -103,9 +109,11 @@ I have added Prisma as my ORM library (this is actually my first time using it, 
 
 deployment:
 
-I had hoped to have a live deployment of this application ready but I ran into a few issues using AWS Lambdas with Prisma (due to the bundle size of the prisma client), in hindsight using DynamoDB and the AWS SDK would have made more sense for an AWS serverless deployment.
+I initially wanted to deploy as a serverless backend but ran into a few issues using AWS Lambdas with Prisma (due to the bundle size of the prisma client), in hindsight using DynamoDB and the AWS SDK would have made more sense for an AWS serverless deployment.
 
-I intend to deploy the backend instead to an EC2 instance when I have time. 
+I instead opted to use Heroku with a mySQL addon to deploy the backend
+
+The frontend is deployed using Vercel
 
 ## Time Spent
 
@@ -117,4 +125,4 @@ It was straightforward to hookup to the Google Translate API once I had decided 
 Adding a leaderboard feature took the bulk of the time as I opted to create an authentication flow so that it was possible to track attempts against each indivdual user 
 ```
 
-Another 10-15 hours spent on unsuccessful deployments...
+Another 10-15 hours spent on deployment...
