@@ -28,7 +28,7 @@ export interface GuessVerbProps {
   setScore: Dispatch<SetStateAction<number>>;
 }
 
-const SUBMIT_TIMEOUT = 3000;
+const SUBMIT_TIMEOUT = 2500;
 
 export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const navigate = useNavigate();
@@ -149,7 +149,9 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       {error && <ErrorAlert errorMessage={error} />}
       {verb && translation && (
         <div className="guess mt-3">
-          <h2>{verb}</h2>
+          {showErrorAlert && <h2 style={{ color: "red" }}>{translation}</h2>}
+          {showSuccessAlert && <h2 style={{ color: "green" }}>{translation}</h2>}
+          {!showErrorAlert && !showSuccessAlert && <h2>{verb}</h2>}
           {/* <DisplayTranslation translation={translation} /> */}
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formBasicGuess">
@@ -163,18 +165,20 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
                 value={guess}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" disabled={submitDisabled}>
-              Submit
-            </Button>
+            {!showErrorAlert && !showSuccessAlert && (
+              <Button variant="primary" type="submit" disabled={submitDisabled}>
+                Submit
+              </Button>
+            )}
           </Form>
+          <div className="mt-3" style={{ minHeight: "5em" }}>
+            {showSuccessAlert && <SuccessAlert />}
+            {showErrorAlert && (
+              <ErrorAlert errorMessage={`Incorrect 😟`} />
+            )}
+          </div>
         </div>
       )}
-      <div className="mt-3" style={{ minHeight: "5em" }}>
-        {showSuccessAlert && <SuccessAlert />}
-        {showErrorAlert && (
-          <ErrorAlert errorMessage={`Incorrect 😟 - '${translation}'`} />
-        )}
-      </div>
     </div>
   );
 };
