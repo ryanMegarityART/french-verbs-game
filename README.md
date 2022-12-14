@@ -15,8 +15,6 @@ If a player reaches 0 points they lose
 
 If a player reaches 20 points they win
 
-## Live Deployment
-
 ## Install and Setup
 
 Pre-requisites to run on local machine:
@@ -26,7 +24,7 @@ mySQL server - follow install instructions here https://dev.mysql.com/doc/mysql-
 nodeJS (v16 has been used to develop this project)
 ```
 
-To run locally you will need to create a .env file in the backend directory (i.e. backend/.env) and a .env fiel in the frontend directory (i.e. frontend/.env). This will contain the following secret values:
+To run locally you will need to create a .env file in the backend directory (i.e. backend/.env) and a .env file in the frontend directory (i.e. frontend/.env). This will contain the following secret values:
 
 backend .env:
 
@@ -47,13 +45,13 @@ VITE_ENDPOINT="http://localhost:4000"
 
 ## Starting the Application
 
-First, start the database:
+First, start the database service on your local machine (on Ubuntu that is the following):
+
 ```
 sudo service mysql start
 ```
 
 Then the frontend and backend need to be started from separate shells
-
 
 Start the frontend:
 
@@ -89,7 +87,7 @@ frontend:
 
 My current frontend build-tool of choice is Vite which I have used to initalise a React + TypeScript frontend
 
-I have added react-bootsrap to the project for easy styling since the UI/UX is not the highest priority in this project
+I have added react-bootstrap to the project for easy styling since the UI/UX is not the highest priority in this project
 
 backend:
 
@@ -97,10 +95,26 @@ I have used node + typescript to create an express app (as required in the assig
 
 I am using a mySQL database since it's free yet fully featured and easy to setup and get going (I considered sqlLite but I have architected this as if I am expecting to eventually receive high enough traffic to warrant a more fully featured standalone db)
 
+I opted for a relational database as I decided early on that I would be creating a leaderboard and running queries joining multiple tables to view this
+
 To view and query the database I use mySQL Workbench
 
 I have added Prisma as my ORM library (this is actually my first time using it, I have previously used TypeORM and not found it particularly great)
 
+deployment:
+
+I had hoped to have a live deployment of this application ready but I ran into a few issues using AWS Lambdas with Prisma (due to the bundle size of the prisma client), in hindsight using DynamoDB and the AWS SDK would have made more sense for an AWS serverless deployment.
+
+I intend to deploy the backend instead to an EC2 instance when I have time. 
+
 ## Time Spent
 
-Roughly 15 - 20 hours
+Roughly 10 - 15 hours developing the code:
+
+```
+It was straightforward to hookup to the Google Translate API once I had decided that was what I was going to use
+
+Adding a leaderboard feature took the bulk of the time as I opted to create an authentication flow so that it was possible to track attempts against each indivdual user 
+```
+
+Another 10-15 hours spent on unsuccessful deployments...
