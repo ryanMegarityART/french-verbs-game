@@ -7,7 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "load-verbs": "ts-node helpers/loadVerbs.ts",
     "serve": "nodemon app.ts",
-    "serverless": "serverless offline start --httpPort 4000"
+    "serverless": "serverless offline start --httpPort 4000",
+    "start": "nodemon app.ts"
+  },
+  "engines": {
+    "node": "16.x"
   },
   "author": "",
   "license": "ISC",
