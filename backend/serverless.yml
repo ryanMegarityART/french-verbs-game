@@ -7,6 +7,15 @@ plugins:
   - serverless-offline
   - serverless-webpack-prisma
 
+package:
+  patterns:
+    - '!nodejs/node_modules/@prisma/engines/*'
+    - '!nodejs/node_modules/.prisma/**/libquery_engine-*'
+    - 'nodejs/node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node'
+    - 'nodejs/node_modules/.prisma/**/libquery_engine-rhel-openssl-1.0.x.so.node'
+    - '!nodejs/prisma/**'
+    - 'nodejs/prisma/*.db'
+
 provider:
   name: aws
   runtime: nodejs16.x
