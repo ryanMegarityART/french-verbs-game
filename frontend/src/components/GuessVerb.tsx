@@ -45,6 +45,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
 
   const getVerbAndTranslation = async () => {
     if (user) {
+      setSubmitDisabled(true);
       const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -64,6 +65,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
 
       setVerb(respJSON.verb);
       setTranslation(respJSON.translation);
+      setSubmitDisabled(false);
     }
   };
 
@@ -117,7 +119,6 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setShowErrorAlert(false);
       getVerbAndTranslation();
       setGuess("");
-      setSubmitDisabled(false);
     }, SUBMIT_TIMEOUT);
   };
 
