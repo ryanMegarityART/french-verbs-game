@@ -12,6 +12,11 @@ provider:
   runtime: nodejs16.x
   stage: prod
   region: eu-west-2
+  environment: 
+    DATABASE_URL: ${env:DATABASE_URL}
+    PORT: ${env:PORT}
+    GOOGLE_TRANSLATE_API_KEY: ${env:GOOGLE_TRANSLATE_API_KEY}
+    TOKEN_KEY: ${env:TOKEN_KEY}
 
 custom:
   webpack:
