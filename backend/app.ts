@@ -8,6 +8,8 @@ import { authenticateToken } from "./helpers/auth";
 const { Translate } = require('@google-cloud/translate').v2;
 import serverless from 'serverless-http';
 
+const prisma = new PrismaClient();
+
 interface Verb {
     id: string;
     verb: string;
@@ -16,7 +18,7 @@ interface Verb {
 }
 
 const app = express();
-// const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -40,7 +42,6 @@ app.use(function (_, res, next) {
 
 // main endpoint for application to request a french verb and its translation
 app.get("/verb", authenticateToken, async (req, res) => {
-    const prisma = new PrismaClient();
 
     // Query random verb from table
     const randomVerb: Verb[] = await prisma.$queryRawUnsafe(
@@ -73,7 +74,6 @@ app.get("/verb", authenticateToken, async (req, res) => {
 
 // endpoint to log an attempt
 app.post("/attempt", authenticateToken, async (req, res) => {
-    const prisma = new PrismaClient();
 
     console.log("attempt body: ", req.body)
 
@@ -121,8 +121,6 @@ app.post("/register", async (req, res) => {
     if (!(email && password && username)) {
         res.status(400).send("All input is required");
     }
-
-    const prisma = new PrismaClient();
 
     // check if user already exist
     // Validate if user exist in our database
@@ -174,8 +172,6 @@ app.post("/login", async (req, res) => {
         res.status(400).send("All input is required");
     }
 
-    const prisma = new PrismaClient();
-
     // Validate if user exist in our database
     const user: any = await prisma.user.findUnique({ where: { email } });
 
@@ -198,7 +194,6 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/leaderboard", authenticateToken, async (req, res) => {
-    const prisma = new PrismaClient();
     const leaderboard = await prisma.$queryRawUnsafe(
         // DO NOT pass in or accept user input here
         `
@@ -231,8 +226,8 @@ app.get("/leaderboard", authenticateToken, async (req, res) => {
 })
 
 
-// app.listen(port, () => {
-//     console.log(`Application started and is running on port ${port}.`);
-// });
+app.listen(port, () => {
+    console.log(`Application started and is running on port ${port}.`);
+});
 
-module.exports.handler = serverless(app);
+// module.exports.handler = serverless(app);
