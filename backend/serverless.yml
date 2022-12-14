@@ -7,13 +7,6 @@ plugins:
   - serverless-offline
   - serverless-webpack-prisma
 
-package:
-  patterns:
-    - '!node_modules/.prisma/client/libquery_engine-*'
-    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
-    - '!node_modules/prisma/libquery_engine-*'
-    - '!node_modules/@prisma/engines/**'
-    
 provider:
   name: aws
   runtime: nodejs16.x
@@ -24,6 +17,7 @@ custom:
   webpack:
     webpackConfig: "webpack.config.js" # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
+    excludeRegex: node_modules\/@prisma\/engines\/.*|node_modules\/\.bin\/.*
     # packager: "npm" # Packager that will be used to package your external modules
     packagerOptions:
       scripts:
