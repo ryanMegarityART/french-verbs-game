@@ -127,6 +127,8 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
         setShowErrorAlert(false);
       }, 2000);
       setScore(score - 1);
+      getVerbAndTranslation();
+      setGuess("");
     }
   };
 
@@ -163,7 +165,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       )}
       <div className="mt-3" style={{ minHeight: "5em" }}>
         {showSuccessAlert && <SuccessAlert />}
-        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟 - Try Again!" />}
+        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟" />}
       </div>
     </div>
   );
