@@ -7,6 +7,8 @@ plugins:
   - serverless-offline
   - serverless-webpack-prisma
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs16.x
