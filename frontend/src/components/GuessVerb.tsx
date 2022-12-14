@@ -114,6 +114,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const triggerReset = () => {
     setTimeout(() => {
       setShowSuccessAlert(false);
+      setShowErrorAlert(false);
       getVerbAndTranslation();
       setGuess("");
       setSubmitDisabled(false);
