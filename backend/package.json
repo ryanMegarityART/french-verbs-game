@@ -9,7 +9,7 @@
     "serve": "nodemon app.ts",
     "serverless": "serverless offline start --httpPort 4000",
     "start": "nodemon dist/app.js",
-    "postinstall": "tsc"
+    "postinstall": "tsc && prisma migrate dev --name init"
   },
   "engines": {
     "node": "16.x"
