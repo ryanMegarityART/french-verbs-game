@@ -11,7 +11,7 @@ leaderboard.get("/", authenticateToken, async (req, res) => {
         // DO NOT pass in or accept user input here
         `
         SELECT 
-        Count(correct) AS numberCorrect,
+        SUM(correct) AS numberCorrect,
         username
         FROM 
             Answer a
