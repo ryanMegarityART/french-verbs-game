@@ -116,7 +116,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       postAttempt({ verb, correct: true, username: user.username });
       setTimeout(() => {
         setShowSuccessAlert(false);
-      }, 1500);
+      }, 2000);
       setScore(score + 1);
       getVerbAndTranslation();
       setGuess("");
@@ -125,7 +125,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       postAttempt({ verb, correct: false, username: user.username });
       setTimeout(() => {
         setShowErrorAlert(false);
-      }, 1500);
+      }, 2000);
       setScore(score - 1);
     }
   };
@@ -163,7 +163,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       )}
       <div className="mt-3" style={{ minHeight: "5em" }}>
         {showSuccessAlert && <SuccessAlert />}
-        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟" />}
+        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟 - Try Again!" />}
       </div>
     </div>
   );
