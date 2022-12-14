@@ -28,6 +28,8 @@ export interface GuessVerbProps {
   setScore: Dispatch<SetStateAction<number>>;
 }
 
+const SUBMIT_TIMEOUT = 3000;
+
 export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const navigate = useNavigate();
   // @ts-ignore
@@ -119,7 +121,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setTimeout(() => {
         setShowSuccessAlert(false);
         setSubmitDisabled(false);
-      }, 2000);
+      }, SUBMIT_TIMEOUT);
       setScore(score + 1);
       getVerbAndTranslation();
       setGuess("");
@@ -131,7 +133,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
         getVerbAndTranslation();
         setGuess("");
         setSubmitDisabled(false);
-      }, 2000);
+      }, SUBMIT_TIMEOUT);
       setScore(score - 1);
     }
   };
