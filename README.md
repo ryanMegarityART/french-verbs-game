@@ -47,7 +47,13 @@ VITE_ENDPOINT="http://localhost:4000"
 
 ## Starting the Application
 
-The frontend and backend need to be started from separate shells 
+First, start the database:
+```
+sudo service mysql start
+```
+
+Then the frontend and backend need to be started from separate shells
+
 
 Start the frontend:
 
