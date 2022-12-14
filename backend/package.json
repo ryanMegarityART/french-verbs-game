@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "load-verbs": "ts-node helpers/loadVerbs.ts",
-    "serve": "serverless offline start --httpPort 4000"
+    "serve": "nodemon app.ts",
+    "serverless": "serverless offline start --httpPort 4000"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +32,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.20",
     "prisma": "^4.7.1",
     "serverless-http": "^3.1.0",
     "serverless-offline": "^12.0.2",
