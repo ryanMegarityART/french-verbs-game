@@ -44,12 +44,11 @@ export const Register = () => {
 
   return (
     <div className="vertical-center">
-      <div className="m-3">
-        <h1>
-          <img src={frenchFlag} className="logo" alt="french flag" /> French
-          Verbs Game
-        </h1>
-      </div>
+      <h1 style={{width: "90vw", marginBottom: "3em"}}>
+        <img src={frenchFlag} className="logo" alt="french flag" />French Verbs
+        Game
+      </h1>
+      <div className="m-3"></div>
       {error && <ErrorAlert errorMessage={error} />}
       <Form className="mt-3" onSubmit={register}>
         <Form.Group className="m-3" controlId="formBasicEmail">

@@ -11,10 +11,9 @@ export const AppNavigation = () => {
     <Navbar expand={false}>
       <Container>
         <Navbar.Brand>
-          <img src={frenchFlag} className="logo" alt="french flag" /> French
-          Verbs Game
+          <img src={frenchFlag} className="logo" alt="french flag" />French Verbs Game
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls={`offcanvasNavbar-expand`} />
+        <Navbar.Toggle className="toggle" aria-controls={`offcanvasNavbar-expand`} />
         <Navbar.Offcanvas
           id={`offcanvasNavbar-expand`}
           aria-labelledby={`offcanvasNavbarLabel-expand`}
