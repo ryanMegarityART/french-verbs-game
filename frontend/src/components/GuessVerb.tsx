@@ -1,4 +1,5 @@
 import React, {
+  CSSProperties,
   Dispatch,
   FormEvent,
   SetStateAction,
@@ -11,6 +12,7 @@ import { SuccessAlert } from "./shared/SuccessAlert";
 import { ErrorAlert } from "./shared/ErrorAlert";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { checkAuthenticationResponse } from "../helpers/token";
+import { FadeLoader } from "react-spinners";
 
 interface VerbResponse {
   verb: string;
@@ -42,10 +44,19 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [color, setColor] = useState("#0066ff");
+
+  const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
 
   const getVerbAndTranslation = async () => {
     if (user) {
       setSubmitDisabled(true);
+      setLoading(true);
       const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb", {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -66,6 +77,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setVerb(respJSON.verb);
       setTranslation(respJSON.translation);
       setSubmitDisabled(false);
+      setLoading(false);
     }
   };
 
@@ -146,40 +158,53 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   }, [user]);
 
   return (
-    <div>
+    <div style={{ minHeight: "60vh" }}>
       {error && <ErrorAlert errorMessage={error} />}
-      {verb && translation && (
-        <div className="guess mt-3">
-          {showErrorAlert && <h2 style={{ color: "red" }}>{translation}</h2>}
-          {showSuccessAlert && <h2 style={{ color: "green" }}>{translation}</h2>}
-          {!showErrorAlert && !showSuccessAlert && <h2>{verb}</h2>}
-          {/* <DisplayTranslation translation={translation} /> */}
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicGuess">
-              <Form.Label className="mt-3">
-                Enter English Translation:
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder={transationHintString(translation)}
-                onChange={(e) => setGuess(e.target.value)}
-                value={guess}
-              />
-            </Form.Group>
-            {!showErrorAlert && !showSuccessAlert && (
-              <Button variant="primary" type="submit" disabled={submitDisabled}>
-                Submit
-              </Button>
+      <div className="guess mt-3">
+        <FadeLoader
+          color={color}
+          loading={loading}
+          cssOverride={override}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+        {verb && translation && !loading && (
+          <>
+            {showErrorAlert && <h2 style={{ color: "red" }}>{translation}</h2>}
+            {showSuccessAlert && (
+              <h2 style={{ color: "green" }}>{translation}</h2>
             )}
-          </Form>
-          <div className="mt-3" style={{ minHeight: "5em" }}>
-            {showSuccessAlert && <SuccessAlert />}
-            {showErrorAlert && (
-              <ErrorAlert errorMessage={`Incorrect 😟`} />
-            )}
-          </div>
-        </div>
-      )}
+            {!showErrorAlert && !showSuccessAlert && <h2>{verb}</h2>}
+            {/* <DisplayTranslation translation={translation} /> */}
+            <Form onSubmit={onSubmit}>
+              <Form.Group className="mb-3" controlId="formBasicGuess">
+                <Form.Label className="mt-3">
+                  Enter English Translation:
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder={transationHintString(translation)}
+                  onChange={(e) => setGuess(e.target.value)}
+                  value={guess}
+                />
+              </Form.Group>
+              {!showErrorAlert && !showSuccessAlert && (
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={submitDisabled}
+                >
+                  Submit
+                </Button>
+              )}
+            </Form>
+            <div className="mt-3" style={{ minHeight: "5em" }}>
+              {showSuccessAlert && <SuccessAlert />}
+              {showErrorAlert && <ErrorAlert errorMessage={`Incorrect 😟`} />}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
