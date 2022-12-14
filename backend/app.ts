@@ -18,7 +18,7 @@ interface Verb {
 }
 
 const app = express();
-const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -226,8 +226,8 @@ app.get("/leaderboard", authenticateToken, async (req, res) => {
 })
 
 
-app.listen(port, () => {
-    console.log(`Application started and is running on port ${port}.`);
-});
+// app.listen(port, () => {
+//     console.log(`Application started and is running on port ${port}.`);
+// });
 
-// module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);
