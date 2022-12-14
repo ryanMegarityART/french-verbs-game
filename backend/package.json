@@ -8,7 +8,8 @@
     "load-verbs": "ts-node helpers/loadVerbs.ts",
     "serve": "nodemon app.ts",
     "serverless": "serverless offline start --httpPort 4000",
-    "start": "nodemon app.ts"
+    "start": "nodemon dist/app.js",
+    "postinstall": "tsc"
   },
   "engines": {
     "node": "16.x"
