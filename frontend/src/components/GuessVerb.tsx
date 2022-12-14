@@ -39,6 +39,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const [guess, setGuess] = useState<string>("");
   const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
+  const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
   const getVerbAndTranslation = async () => {
     if (user) {
@@ -111,11 +112,13 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("verb: ", verb, "answer: ", translation, "guess: ", guess);
+    setSubmitDisabled(true);
     if (guess.toLowerCase() === translation.toLowerCase()) {
       setShowSuccessAlert(true);
       postAttempt({ verb, correct: true, username: user.username });
       setTimeout(() => {
         setShowSuccessAlert(false);
+        setSubmitDisabled(false);
       }, 2000);
       setScore(score + 1);
       getVerbAndTranslation();
@@ -125,10 +128,11 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       postAttempt({ verb, correct: false, username: user.username });
       setTimeout(() => {
         setShowErrorAlert(false);
+        getVerbAndTranslation();
+        setGuess("");
+        setSubmitDisabled(false);
       }, 2000);
       setScore(score - 1);
-      getVerbAndTranslation();
-      setGuess("");
     }
   };
 
@@ -157,7 +161,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
                 value={guess}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={submitDisabled}>
               Submit
             </Button>
           </Form>
@@ -165,7 +169,9 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       )}
       <div className="mt-3" style={{ minHeight: "5em" }}>
         {showSuccessAlert && <SuccessAlert />}
-        {showErrorAlert && <ErrorAlert errorMessage="Incorrect 😟" />}
+        {showErrorAlert && (
+          <ErrorAlert errorMessage={`Incorrect 😟 - '${translation}'`} />
+        )}
       </div>
     </div>
   );
