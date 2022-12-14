@@ -111,6 +111,15 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
     }
   };
 
+  const triggerReset = () => {
+    setTimeout(() => {
+      setShowSuccessAlert(false);
+      getVerbAndTranslation();
+      setGuess("");
+      setSubmitDisabled(false);
+    }, SUBMIT_TIMEOUT);
+  };
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("verb: ", verb, "answer: ", translation, "guess: ", guess);
@@ -118,22 +127,12 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
     if (guess.toLowerCase() === translation.toLowerCase()) {
       setShowSuccessAlert(true);
       postAttempt({ verb, correct: true, username: user.username });
-      setTimeout(() => {
-        setShowSuccessAlert(false);
-        setSubmitDisabled(false);
-      }, SUBMIT_TIMEOUT);
+      triggerReset();
       setScore(score + 1);
-      getVerbAndTranslation();
-      setGuess("");
     } else {
       setShowErrorAlert(true);
       postAttempt({ verb, correct: false, username: user.username });
-      setTimeout(() => {
-        setShowErrorAlert(false);
-        getVerbAndTranslation();
-        setGuess("");
-        setSubmitDisabled(false);
-      }, SUBMIT_TIMEOUT);
+      triggerReset();
       setScore(score - 1);
     }
   };
