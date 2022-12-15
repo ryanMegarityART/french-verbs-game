@@ -136,9 +136,8 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("verb: ", verb, "answer: ", translation, "guess: ", guess);
     setSubmitDisabled(true);
-    if (guess.toLowerCase() === translation.toLowerCase()) {
+    if (guess.toLowerCase().trim() === translation.toLowerCase().trim()) {
       setShowSuccessAlert(true);
       postAttempt({ verb, correct: true, username: user.username });
       triggerReset();
