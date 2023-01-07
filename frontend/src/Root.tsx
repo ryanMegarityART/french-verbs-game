@@ -27,7 +27,7 @@ export const Root = () => {
   }, [user]);
 
   return (
-    <div className="app">
+    <div>
       {user && <AppNavigation />}
       <Outlet context={[user, setUser]} />
     </div>
