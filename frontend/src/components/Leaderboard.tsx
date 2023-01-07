@@ -18,7 +18,7 @@ export const Leaderboard = () => {
   const getLeaderboard = async () => {
     if (user) {
       const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/leaderboard", {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        method: "GET",
         headers: {
           Authentication: `Bearer ${user.token}`,
           "Content-Type": "application/json",

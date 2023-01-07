@@ -58,7 +58,7 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setSubmitDisabled(true);
       setLoading(true);
       const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/verb", {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        method: "GET",
         headers: {
           Authentication: `Bearer ${user.token}`,
           "Content-Type": "application/json",
@@ -102,16 +102,16 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
   const postAttempt = async (attempt: Attempt) => {
     if (user) {
       const response = await fetch(import.meta.env.VITE_ENDPOINT + "/attempt", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
         headers: {
           Authentication: `Bearer ${user.token}`,
           "Content-Type": "application/json",
         },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(attempt), // body data type must match "Content-Type" header
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(attempt),
       });
 
       if (!response.ok) {
