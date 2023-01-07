@@ -52,7 +52,7 @@ export const Conjugate = () => {
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [verb, setVerb] = useState<ConjugationVerb>(avoirExample);
-  const [answerObj, setAnswerObj] = useState<ConjugationAnswer>();
+  const [answerObj, setAnswerObj] = useState<any>();
   const [currentVerbAttempts, setCurrentVerbAttempts] = useState(0);
   const updateGuess = (updateObj: any) => {
     setGuess({ ...guess, ...updateObj });
