@@ -100,7 +100,7 @@ export const Conjugate = () => {
                         autoComplete="off"
                       />
                     </Col>
-                    <Col>{showAnswers && <p>✅</p>}</Col>
+                    <Col style={{ textAlign: "start" }}>{showAnswers && <p className="mt-2">✅</p>}</Col>
                   </Row>
                 );
               })}
