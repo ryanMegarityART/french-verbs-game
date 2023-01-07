@@ -37,5 +37,6 @@ login.post("/", async (req, res) => {
         // user
         return res.status(200).json({ ...user, token });
     }
+    await prisma.$disconnect();
     res.status(400).send("Invalid Credentials");
 });
