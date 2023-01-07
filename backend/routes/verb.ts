@@ -10,11 +10,14 @@ export const verb = express.Router();
 verb.get("/", authenticateToken, async (req, res) => {
     const prisma = new PrismaClient();
 
+    // Creates a google translate api client
+    const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_API_KEY, projectId: "french-verb-game" });
+    
+    // minimum translate confidence of 90%
+    // the API often returns the detection as English and duplicates the word
     let confidence = 0
     let randomVerb: Verb[] = [];
     let translation;
-    // minimum translate confidence of 90%
-    // the API often returns the detection as English and duplicates the word
     while (confidence < 0.9) {
         // Query random verb from table
         randomVerb = await prisma.$queryRawUnsafe(
@@ -22,9 +25,6 @@ verb.get("/", authenticateToken, async (req, res) => {
             `SELECT * FROM Verb ORDER BY RAND() LIMIT 1;`,
         )
         console.log("random verb: ", randomVerb);
-
-        // Creates a google translate api client
-        const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_API_KEY, projectId: "french-verb-game" });
 
         const text = randomVerb[0].verb;
         const target = 'en';
