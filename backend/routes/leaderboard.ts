@@ -18,9 +18,9 @@ leaderboard.get("/", authenticateToken, async (req, res) => {
         INNER JOIN 
             User u ON a.userId = u.id
         GROUP BY 
-            userId
+            username
         ORDER BY 
-            NumberCorrect DESC
+            numberCorrect DESC
         LIMIT 3
         `,
     );
