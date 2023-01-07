@@ -114,15 +114,3 @@ I initially wanted to deploy as a serverless backend but ran into a few issues u
 I instead opted to use Heroku with a mySQL addon to deploy the backend
 
 The frontend is deployed using Vercel
-
-## Time Spent
-
-Roughly 10 - 15 hours developing the code:
-
-```
-It was straightforward to hookup to the Google Translate API once I had decided that was what I was going to use
-
-Adding a leaderboard feature took the bulk of the time as I opted to create an authentication flow so that it was possible to track attempts against each indivdual user 
-```
-
-Another 10-15 hours spent on deployment...
