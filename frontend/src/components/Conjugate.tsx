@@ -4,50 +4,37 @@ import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 interface ConjugationVerb {
   infinitive: string;
   tense: string;
-  conjugations: {
-    pre: string;
-    conjugation: string;
-  }[];
+  conjugations: Conjugations;
+}
+
+interface Conjugations {
+  "j'": string;
+  tu: string;
+  "il / elle / on": string;
+  nous: string;
+  vous: string;
+  "ils / elles": string;
 }
 
 const avoirExample: ConjugationVerb = {
   infinitive: "avoir",
   tense: "Présent",
-  conjugations: [
-    {
-      pre: "j'",
-      conjugation: "ai",
-    },
-    {
-      pre: "tu",
-      conjugation: "as",
-    },
-    {
-      pre: "il / elle / on",
-      conjugation: "a",
-    },
-    {
-      pre: "nous",
-      conjugation: "avons",
-    },
-    {
-      pre: "vous",
-      conjugation: "avez",
-    },
-    {
-      pre: "ils / elles",
-      conjugation: "ont",
-    },
-  ],
+  conjugations: {
+    "j'": "ai",
+    tu: "as",
+    "il / elle / on": "a",
+    nous: "avons",
+    vous: "avez",
+    "ils / elles": "ont",
+  },
 };
 
 export const Conjugate = () => {
   const [guess, setGuess] = useState<any>("");
-  const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
-  const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [verb, setVerb] = useState<ConjugationVerb>(avoirExample);
+  const [showAnswers, setShowAnswers] = useState(true);
 
   const updateGuess = (updateObj: any) => {
     setGuess({ ...guess, ...updateObj });
@@ -59,6 +46,8 @@ export const Conjugate = () => {
     setSubmitDisabled(true);
 
     console.log(guess);
+
+    // check correct answers
 
     // if (guess.toLowerCase().trim() === translation.toLowerCase().trim()) {
     //   setShowSuccessAlert(true);
@@ -80,43 +69,51 @@ export const Conjugate = () => {
       <Form className="p-3" onSubmit={onSubmit}>
         <h2>{verb.infinitive}</h2>
         <Form.Group className="mb-3">
-          <Form.Label className="m-3">
+          <Form.Label className="m-3" style={{ fontSize: "0.7em" }}>
             Enter <strong>Présent</strong> Tense Conjugations:
           </Form.Label>
-          <Container>
+          <div>
             {verb &&
               verb.conjugations &&
-              verb.conjugations.length &&
-              verb.conjugations.map((conj) => {
+              Object.entries(verb.conjugations).map(([key, value]) => {
                 return (
-                  <Row key={conj.pre} style={{ fontSize: "0.9em" }}>
-                    <Col style={{ textAlign: "end" }}>
-                      <p>{conj.pre}</p>
+                  <Row
+                    key={key}
+                    style={{ fontSize: "0.6em" }}
+                    className="justify-content-md-center mt-1"
+                  >
+                    <Col style={{ textAlign: "end" }} xs={4}>
+                      <p>{key}</p>
                     </Col>
-                    <Col>
+                    <Col xs={6}>
                       <Form.Control
                         type="text"
                         placeholder=""
                         required={true}
                         className="conjugation-text-box"
                         onChange={(e) =>
-                          updateGuess({ [conj.pre]: e.target.value.toLowerCase() })
+                          updateGuess({
+                            [key]: e.target.value.toLowerCase(),
+                          })
                         }
-                        value={guess[`${conj.pre}`]}
-                        id={`${conj.pre}_answer`}
+                        value={guess.key}
                         autoComplete="off"
                       />
                     </Col>
+                    <Col>{showAnswers && <p>✅</p>}</Col>
                   </Row>
                 );
               })}
-          </Container>
+            <Button
+              className="mt-3"
+              variant="primary"
+              type="submit"
+              disabled={submitDisabled}
+            >
+              Submit
+            </Button>
+          </div>
         </Form.Group>
-        {!showErrorAlert && !showSuccessAlert && (
-          <Button variant="primary" type="submit" disabled={submitDisabled}>
-            Submit
-          </Button>
-        )}
       </Form>
       <div className="add-link" style={{ fontSize: "0.7em" }}>
         <Card bg="info" text="white" style={{ width: "100%" }} className="mb-2">
