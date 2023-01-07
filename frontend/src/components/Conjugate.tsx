@@ -29,13 +29,31 @@ const avoirExample: ConjugationVerb = {
   },
 };
 
+interface ConjugationAnswer {
+  "j'": boolean;
+  tu: boolean;
+  "il / elle / on": boolean;
+  nous: boolean;
+  vous: boolean;
+  "ils / elles": boolean;
+}
+
+const BLANK_GUESS = {
+  "j'": "",
+  tu: "",
+  "il / elle / on": "",
+  nous: "",
+  vous: "",
+  "ils / elles": "",
+};
+
 export const Conjugate = () => {
   const [guess, setGuess] = useState<any>("");
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [verb, setVerb] = useState<ConjugationVerb>(avoirExample);
-  const [showAnswers, setShowAnswers] = useState(true);
-
+  const [answerObj, setAnswerObj] = useState<ConjugationAnswer>();
+  const [currentVerbAttempts, setCurrentVerbAttempts] = useState(0);
   const updateGuess = (updateObj: any) => {
     setGuess({ ...guess, ...updateObj });
   };
@@ -45,30 +63,37 @@ export const Conjugate = () => {
     console.log(e);
     setSubmitDisabled(true);
 
-    console.log(guess);
-
     // check correct answers
+    setAnswerObj(
+      Object.fromEntries(
+        Object.entries(verb.conjugations).map(([key, value]) => {
+          console.log(guess);
+          console.log(key, guess[key], value, guess[key] === value);
+          return [[key], guess[key] === value];
+        })
+      )
+    );
 
-    // if (guess.toLowerCase().trim() === translation.toLowerCase().trim()) {
-    //   setShowSuccessAlert(true);
-    //   postAttempt({ verb, correct: true, username: user.username });
-    //   triggerReset();
-    //   setScore((score) => score + 1);
-    // } else {
-    //   setShowErrorAlert(true);
-    //   postAttempt({ verb, correct: false, username: user.username });
-    //   triggerReset();
-    //   setScore((score) => score - 1);
-    // }
+    setCurrentVerbAttempts((currentVerbAttempts) => currentVerbAttempts + 1);
+
+    if (currentVerbAttempts > 2) {
+      setGuess(verb.conjugations);
+      setTimeout(() => {
+        setVerb(avoirExample);
+        setAnswerObj(undefined);
+        setGuess(BLANK_GUESS);
+        setCurrentVerbAttempts(0);
+      }, 2500);
+    }
 
     setSubmitDisabled(false);
   };
   return (
     <div className="conj">
-      <h2 className="mb-3">🤔 Conjugate Game</h2>
+      <h2 className="mb-3">✍️ Conjugate Game</h2>
       <Form className="p-1" onSubmit={onSubmit}>
-        <h1>{verb.infinitive}</h1>
-        <Form.Group className="mb-3">
+        <h1 className="m-3 p-1">{verb.infinitive}</h1>
+        <Form.Group className="mb-3" controlId="conjugationForm">
           <Form.Label className="m-3" style={{ fontSize: "0.7em" }}>
             Enter <strong>Présent</strong> Tense Conjugations:
           </Form.Label>
@@ -96,22 +121,54 @@ export const Conjugate = () => {
                             [key]: e.target.value.toLowerCase(),
                           })
                         }
-                        value={guess.key}
+                        value={guess[key]}
                         autoComplete="off"
                       />
                     </Col>
-                    <Col style={{ textAlign: "start" }}>{showAnswers && <p className="mt-2">✅</p>}</Col>
+                    <Col style={{ textAlign: "start" }}>
+                      {answerObj && !!answerObj[key] && (
+                        <p className="mt-2">✅</p>
+                      )}
+                      {answerObj && !answerObj[key] && (
+                        <p className="mt-2">❌</p>
+                      )}
+                    </Col>
                   </Row>
                 );
               })}
-            <Button
-              className="mt-3"
-              variant="primary"
-              type="submit"
-              disabled={submitDisabled}
-            >
-              Submit
-            </Button>
+
+            {currentVerbAttempts === 0 && (
+              <Button
+                className="mt-3"
+                variant="primary"
+                type="submit"
+                disabled={submitDisabled}
+              >
+                Submit
+              </Button>
+            )}
+
+            {currentVerbAttempts > 0 && currentVerbAttempts < 3 && (
+              <Button
+                className="mt-3"
+                variant="warning"
+                type="submit"
+                disabled={submitDisabled}
+              >
+                Try Again
+              </Button>
+            )}
+
+            {currentVerbAttempts > 2 && (
+              <Button
+                className="mt-3"
+                variant="danger"
+                type="submit"
+                disabled={submitDisabled}
+              >
+                Show Answers
+              </Button>
+            )}
           </div>
         </Form.Group>
       </Form>
