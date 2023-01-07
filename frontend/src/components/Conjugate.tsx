@@ -100,7 +100,7 @@ export const Conjugate = () => {
                         required={true}
                         className="conjugation-text-box"
                         onChange={(e) =>
-                          updateGuess({ [conj.pre]: e.target.value })
+                          updateGuess({ [conj.pre]: e.target.value.toLowerCase() })
                         }
                         value={guess[`${conj.pre}`]}
                         id={`${conj.pre}_answer`}
