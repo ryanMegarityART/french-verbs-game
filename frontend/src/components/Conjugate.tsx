@@ -65,9 +65,9 @@ export const Conjugate = () => {
   };
   return (
     <div className="conj">
-      <h2 className="m-3">🤔 Conjugate Game</h2>
+      <h2 className="mb-3">🤔 Conjugate Game</h2>
       <Form className="p-1" onSubmit={onSubmit}>
-        <h2>{verb.infinitive}</h2>
+        <h1>{verb.infinitive}</h1>
         <Form.Group className="mb-3">
           <Form.Label className="m-3" style={{ fontSize: "0.7em" }}>
             Enter <strong>Présent</strong> Tense Conjugations:
