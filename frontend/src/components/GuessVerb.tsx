@@ -141,12 +141,12 @@ export const GuessVerb = ({ score, setScore }: GuessVerbProps) => {
       setShowSuccessAlert(true);
       postAttempt({ verb, correct: true, username: user.username });
       triggerReset();
-      setScore(score + 1);
+      setScore((score) => score + 1);
     } else {
       setShowErrorAlert(true);
       postAttempt({ verb, correct: false, username: user.username });
       triggerReset();
-      setScore(score - 1);
+      setScore((score) => score - 1);
     }
   };
 
