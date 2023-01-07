@@ -7,7 +7,7 @@ export interface ScoreProps {
 
 export const Score = ({ score }: ScoreProps) => {
   return (
-    <div className="mt-3">
+    <div className="m-3">
       <ProgressBar>
         <ProgressBar
           striped
@@ -18,7 +18,7 @@ export const Score = ({ score }: ScoreProps) => {
         {/* <ProgressBar variant="warning" now={20} key={2} /> */}
         {/* <ProgressBar striped variant="danger" now={10} key={3} /> */}
       </ProgressBar>
-      <h4>Score: {score}</h4>
+      <h4 className="m-3">Score: {score}</h4>
     </div>
   );
 };

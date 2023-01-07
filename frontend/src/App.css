@@ -13,8 +13,12 @@
   margin-right: 1em;
 }
 
-
 .guess {
+  padding: 1em;
+  font-size: 1.25em;
+}
+
+.conj {
   padding: 1em;
   font-size: 1.25em;
 }
@@ -35,4 +39,12 @@ a {
 
 .toggle {
   font-size: 0.75em;
+}
+
+.conjugation-text-box {
+  width: 6em;
+}
+
+.add-link {
+  margin-top: 2em;
 }

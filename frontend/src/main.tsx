@@ -7,7 +7,10 @@ import { SignIn } from "./components/auth/SignIn";
 import { Leaderboard } from "./components/Leaderboard";
 import { Register } from "./components/auth/Register";
 import { Root } from "./Root";
+import { GuessVerb } from "./components/GuessVerb";
 import "./App.css";
+import { Conjugate } from "./components/Conjugate";
+import { AddConjugationVerb } from "./components/AddConjugationVerb";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +21,20 @@ const router = createBrowserRouter([
       {
         path: "play",
         element: <App />,
+        children: [
+          {
+            path: "translate",
+            element: <GuessVerb />,
+          },
+          {
+            path: "conjugate",
+            element: <Conjugate />,
+          },
+          {
+            path: "add-conjugation-verb",
+            element: <AddConjugationVerb />,
+          },
+        ],
       },
       {
         path: "leaderboard",

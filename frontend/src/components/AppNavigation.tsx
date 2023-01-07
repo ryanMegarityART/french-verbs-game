@@ -4,16 +4,20 @@ import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Container from "react-bootstrap/Container";
 import frenchFlag from "../assets/french-flag.svg";
+import { NavDropdown } from "react-bootstrap";
 
 export const AppNavigation = () => {
-
   return (
     <Navbar expand={false}>
       <Container>
         <Navbar.Brand>
-          <img src={frenchFlag} className="logo" alt="french flag" />French Verbs Game
+          <img src={frenchFlag} className="logo" alt="french flag" />
+          French Verbs Game
         </Navbar.Brand>
-        <Navbar.Toggle className="toggle" aria-controls={`offcanvasNavbar-expand`} />
+        <Navbar.Toggle
+          className="toggle"
+          aria-controls={`offcanvasNavbar-expand`}
+        />
         <Navbar.Offcanvas
           id={`offcanvasNavbar-expand`}
           aria-labelledby={`offcanvasNavbarLabel-expand`}
@@ -26,7 +30,14 @@ export const AppNavigation = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="justify-content-end flex-grow-1 pe-3">
-              <Nav.Link href={`/play`}>Play / Restart ▶️</Nav.Link>
+              <NavDropdown title="Play / Restart ▶️" id="basic-nav-dropdown">
+                <NavDropdown.Item href={`/play/translate`}>
+                  🔡 Translate
+                </NavDropdown.Item>
+                <NavDropdown.Item href={`/play/conjugate`}>
+                  🤔 Conjugate
+                </NavDropdown.Item>
+              </NavDropdown>
               <Nav.Link href={`/leaderboard`}>Leaderboard 🏆</Nav.Link>
               <Nav.Link
                 style={{ color: "red" }}
