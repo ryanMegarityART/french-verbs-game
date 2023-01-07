@@ -79,11 +79,11 @@ export const Conjugate = () => {
                 return (
                   <Row
                     key={key}
-                    style={{ fontSize: "0.6em" }}
-                    className="justify-content-md-center mt-1"
+                    style={{ fontSize: "0.7em" }}
+                    className="justify-content-md-center mt-2"
                   >
                     <Col style={{ textAlign: "end" }} xs={4}>
-                      <p>{key}</p>
+                      <p className="mt-1">{key}</p>
                     </Col>
                     <Col xs={6}>
                       <Form.Control
