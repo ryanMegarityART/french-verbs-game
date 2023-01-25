@@ -35,7 +35,7 @@ export const AppNavigation = () => {
                   🔡 Translate
                 </NavDropdown.Item>
                 <NavDropdown.Item href={`/play/conjugate`}>
-                  🤔 Conjugate
+                  ✍️ Conjugate
                 </NavDropdown.Item>
               </NavDropdown>
               <Nav.Link href={`/leaderboard`}>Leaderboard 🏆</Nav.Link>

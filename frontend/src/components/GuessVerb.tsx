@@ -10,16 +10,11 @@ import { GameOver } from "./GameOver";
 import { GameWin } from "./GameWin";
 import { Score } from "./Score";
 import { transationHintString } from "../helpers/translation";
+import { postAttempt } from "./shared/postAttempt";
 
 interface VerbResponse {
   verb: string;
   translation: string;
-}
-
-interface Attempt {
-  verb: string;
-  correct: boolean;
-  username: string;
 }
 
 const SUBMIT_TIMEOUT = 2500;
@@ -78,32 +73,6 @@ export const GuessVerb = () => {
     }
   };
 
-  const postAttempt = async (attempt: Attempt) => {
-    if (user) {
-      const response = await fetch(import.meta.env.VITE_ENDPOINT + "/attempt", {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          Authentication: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify(attempt),
-      });
-
-      if (!response.ok) {
-        return await checkAuthenticationResponse(
-          response,
-          setUser,
-          setError,
-          navigate
-        );
-      }
-    }
-  };
-
   const triggerReset = () => {
     setTimeout(() => {
       setShowSuccessAlert(false);
@@ -118,12 +87,24 @@ export const GuessVerb = () => {
     setSubmitDisabled(true);
     if (guess.toLowerCase().trim() === translation.toLowerCase().trim()) {
       setShowSuccessAlert(true);
-      postAttempt({ verb, correct: true, username: user.username });
+      postAttempt(
+        { verb, correct: true, username: user.username },
+        user,
+        setUser,
+        setError,
+        navigate
+      );
       triggerReset();
       setScore((score) => score + 1);
     } else {
       setShowErrorAlert(true);
-      postAttempt({ verb, correct: false, username: user.username });
+      postAttempt(
+        { verb, correct: false, username: user.username },
+        user,
+        setUser,
+        setError,
+        navigate
+      );
       triggerReset();
       setScore((score) => score - 1);
     }

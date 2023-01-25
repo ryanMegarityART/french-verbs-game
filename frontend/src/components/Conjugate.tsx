@@ -1,5 +1,10 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { checkAuthenticationResponse } from "../helpers/token";
+import { ErrorAlert } from "./shared/ErrorAlert";
+import { postAttempt } from "./shared/postAttempt";
+import { SuccessAlert } from "./shared/SuccessAlert";
 
 interface ConjugationVerb {
   infinitive: string;
@@ -16,19 +21,6 @@ interface Conjugations {
   "ils / elles": string;
 }
 
-const avoirExample: ConjugationVerb = {
-  infinitive: "avoir",
-  tense: "Présent",
-  conjugations: {
-    "j'": "ai",
-    tu: "as",
-    "il / elle / on": "a",
-    nous: "avons",
-    vous: "avez",
-    "ils / elles": "ont",
-  },
-};
-
 interface ConjugationAnswer {
   "j'": boolean;
   tu: boolean;
@@ -38,7 +30,7 @@ interface ConjugationAnswer {
   "ils / elles": boolean;
 }
 
-const BLANK_GUESS = {
+export const BLANK_GUESS = {
   "j'": "",
   tu: "",
   "il / elle / on": "",
@@ -48,59 +40,121 @@ const BLANK_GUESS = {
 };
 
 export const Conjugate = () => {
+  const navigate = useNavigate();
+  // @ts-ignore
+  const [user, setUser] = useOutletContext();
   const [guess, setGuess] = useState<any>("");
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
-  const [verb, setVerb] = useState<ConjugationVerb>(avoirExample);
+  const [verb, setVerb] = useState<ConjugationVerb>();
   const [answerObj, setAnswerObj] = useState<any>();
   const [currentVerbAttempts, setCurrentVerbAttempts] = useState(0);
+  const [error, setError] = useState<string>("");
   const updateGuess = (updateObj: any) => {
     setGuess({ ...guess, ...updateObj });
   };
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(e);
     setSubmitDisabled(true);
 
-    // check correct answers
-    setAnswerObj(
-      Object.fromEntries(
+    if (verb) {
+      setSubmitDisabled(true);
+
+      // check correct answers
+      const answerObj = Object.fromEntries(
         Object.entries(verb.conjugations).map(([key, value]) => {
-          console.log(guess);
-          console.log(key, guess[key], value, guess[key] === value);
           return [[key], guess[key] === value];
         })
-      )
-    );
+      );
+      setAnswerObj(answerObj);
+      const allCorrect = Object.values(answerObj).reduce(
+        (prev, curr) => prev && curr,
+        true
+      );
+      if (allCorrect) {
+        setShowSuccessAlert(true);
+        postAttempt(
+          { verb: verb.infinitive, correct: true, username: user.username },
+          user,
+          setUser,
+          setError,
+          navigate
+        );
+        setTimeout(() => {
+          setShowSuccessAlert(false);
+          getVerbWithConjugation();
+          setAnswerObj(undefined);
+          setGuess(BLANK_GUESS);
+          setCurrentVerbAttempts(0);
+        }, 1500);
+      } else {
+        setCurrentVerbAttempts(
+          (currentVerbAttempts) => currentVerbAttempts + 1
+        );
 
-    setCurrentVerbAttempts((currentVerbAttempts) => currentVerbAttempts + 1);
+        if (currentVerbAttempts > 2) {
+          setGuess(verb.conjugations);
+          setTimeout(() => {
+            getVerbWithConjugation();
+            setAnswerObj(undefined);
+            setGuess(BLANK_GUESS);
+            setCurrentVerbAttempts(0);
+          }, 2500);
+        }
+      }
 
-    if (currentVerbAttempts > 2) {
-      setGuess(verb.conjugations);
-      setTimeout(() => {
-        setVerb(avoirExample);
-        setAnswerObj(undefined);
-        setGuess(BLANK_GUESS);
-        setCurrentVerbAttempts(0);
-      }, 2500);
+      setSubmitDisabled(false);
     }
-
-    setSubmitDisabled(false);
   };
+
+  const getVerbWithConjugation = async () => {
+    if (user) {
+      setSubmitDisabled(true);
+      setLoading(true);
+      const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/conjugate", {
+        method: "GET",
+        headers: {
+          Authentication: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!resp.ok) {
+        return await checkAuthenticationResponse(
+          resp,
+          setUser,
+          setError,
+          navigate
+        );
+      }
+      const respJSON: { randomVerb: ConjugationVerb[] } = await resp.json();
+
+      setVerb(respJSON.randomVerb[0]);
+      setSubmitDisabled(false);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getVerbWithConjugation();
+  }, [user]);
+
   return (
     <div className="conj">
       <h2 className="mb-3">✍️ Conjugate Game</h2>
-      <Form className="p-1" onSubmit={onSubmit}>
-        <h1 className="m-3 p-1">{verb.infinitive}</h1>
-        <Form.Group className="mb-3" controlId="conjugationForm">
-          <Form.Label className="m-3" style={{ fontSize: "0.7em" }}>
-            Enter <strong>Présent</strong> Tense Conjugations:
-          </Form.Label>
-          <div>
-            {verb &&
-              verb.conjugations &&
-              Object.entries(verb.conjugations).map(([key, value]) => {
+      {showSuccessAlert && <SuccessAlert />}
+      {error && <ErrorAlert errorMessage={error} />}
+      {verb && verb.conjugations && (
+        <Form className="p-1" onSubmit={onSubmit}>
+          <h1 className="m-3 p-1">{verb.infinitive}</h1>
+          <Form.Group className="mb-3" controlId="conjugationForm">
+            <Form.Label className="m-3" style={{ fontSize: "0.7em" }}>
+              Enter <strong>{verb.tense}</strong> Tense Conjugations:
+            </Form.Label>
+            <div>
+              {Object.entries(verb.conjugations).map(([key, value]) => {
                 return (
                   <Row
                     key={key}
@@ -137,41 +191,42 @@ export const Conjugate = () => {
                 );
               })}
 
-            {currentVerbAttempts === 0 && (
-              <Button
-                className="mt-3"
-                variant="primary"
-                type="submit"
-                disabled={submitDisabled}
-              >
-                Submit
-              </Button>
-            )}
+              {currentVerbAttempts === 0 && (
+                <Button
+                  className="mt-3"
+                  variant="primary"
+                  type="submit"
+                  disabled={submitDisabled}
+                >
+                  Submit
+                </Button>
+              )}
 
-            {currentVerbAttempts > 0 && currentVerbAttempts < 3 && (
-              <Button
-                className="mt-3"
-                variant="warning"
-                type="submit"
-                disabled={submitDisabled}
-              >
-                Try Again
-              </Button>
-            )}
+              {currentVerbAttempts > 0 && currentVerbAttempts < 3 && (
+                <Button
+                  className="mt-3"
+                  variant="warning"
+                  type="submit"
+                  disabled={submitDisabled}
+                >
+                  Try Again
+                </Button>
+              )}
 
-            {currentVerbAttempts > 2 && (
-              <Button
-                className="mt-3"
-                variant="danger"
-                type="submit"
-                disabled={submitDisabled}
-              >
-                Show Answers
-              </Button>
-            )}
-          </div>
-        </Form.Group>
-      </Form>
+              {currentVerbAttempts > 2 && (
+                <Button
+                  className="mt-3"
+                  variant="danger"
+                  type="submit"
+                  disabled={submitDisabled}
+                >
+                  Show Answers
+                </Button>
+              )}
+            </div>
+          </Form.Group>
+        </Form>
+      )}
       <div className="add-link" style={{ fontSize: "0.7em" }}>
         <Card bg="info" text="white" style={{ width: "100%" }} className="mb-2">
           {/* <Card.Header>Header</Card.Header> */}

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -12,11 +12,12 @@ datasource db {
 }
 
 model Verb {
-  id            Int      @id @default(autoincrement())
-  verb          String   @unique
+  id            Int           @id @default(autoincrement())
+  verb          String        @unique
   answers       Answer[]
-  createdAt     DateTime @default(now())
-  lastUpdatedAt DateTime @default(now())
+  conjugation   Conjugation[]
+  createdAt     DateTime      @default(now())
+  lastUpdatedAt DateTime      @default(now())
 }
 
 model User {
@@ -38,4 +39,24 @@ model Answer {
   userId        Int
   createdAt     DateTime @default(now())
   lastUpdatedAt DateTime @default(now())
+}
+
+model Tense {
+  id            Int           @id @default(autoincrement())
+  tense         String
+  conjugations  Conjugation[]
+  createdAt     DateTime      @default(now())
+  lastUpdatedAt DateTime      @default(now())
+}
+
+model Conjugation {
+  id            Int      @id @default(autoincrement())
+  verb          Verb     @relation(fields: [verbId], references: [id])
+  verbId        Int
+  tense         Tense    @relation(fields: [tenseId], references: [id])
+  tenseId       Int
+  conjugations  Json
+  createdAt     DateTime @default(now())
+  lastUpdatedAt DateTime @default(now())
+  @@unique([verbId, tenseId], name: "uniqueVerbTense")
 }

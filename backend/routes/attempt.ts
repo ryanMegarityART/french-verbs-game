@@ -14,6 +14,7 @@ attempt.post("/", authenticateToken, async (req, res) => {
     const verbRow = await prisma.verb.findFirst({ where: { verb: req.body.verb } });
 
     if (!verbRow) {
+        await prisma.$disconnect();
         return res.status(500).json({ error: "Verb not found" })
     }
 
