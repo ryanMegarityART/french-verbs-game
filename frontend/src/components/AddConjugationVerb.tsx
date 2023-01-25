@@ -186,7 +186,7 @@ export const AddConjugationVerb = () => {
                         className="conjugation-text-box"
                         onChange={(e) =>
                           updateConjugation({
-                            [key]: e.target.value.toLowerCase(),
+                            [key]: e.target.value.toLowerCase().replace(" ", ""),
                           })
                         }
                         value={conjugations[key]}
