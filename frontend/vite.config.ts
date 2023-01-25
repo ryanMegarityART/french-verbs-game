@@ -1,7 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import cjs from 'rollup-plugin-cjs';
+import { resolve } from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()]
-})
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      input: {
+        index: resolve(__dirname, 'src/index.html'),
+      },
+      plugins: [cjs()],
+    },
+    commonjsOptions: {
+      exclude: [/./],
+    },
+  },
+});

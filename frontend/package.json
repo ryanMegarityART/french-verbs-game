@@ -19,6 +19,7 @@
     "react-router-dom": "^6.4.5",
     "react-spinners": "^0.13.7",
     "react-windowed-select": "^5.1.0",
+    "rollup-plugin-cjs": "^1.0.0",
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
