@@ -12,7 +12,7 @@ interface ConjugationVerb {
   conjugations: Conjugations;
 }
 
-interface Conjugations {
+export interface Conjugations {
   "j'": string;
   tu: string;
   "il / elle / on": string;
@@ -21,7 +21,7 @@ interface Conjugations {
   "ils / elles": string;
 }
 
-interface ConjugationAnswer {
+export interface ConjugationAnswer {
   "j'": boolean;
   tu: boolean;
   "il / elle / on": boolean;
@@ -43,11 +43,11 @@ export const Conjugate = () => {
   const navigate = useNavigate();
   // @ts-ignore
   const [user, setUser] = useOutletContext();
-  const [guess, setGuess] = useState<any>("");
+  const [guess, setGuess] = useState<Conjugations>(BLANK_GUESS);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [verb, setVerb] = useState<ConjugationVerb>();
-  const [answerObj, setAnswerObj] = useState<any>();
+  const [answerObj, setAnswerObj] = useState<ConjugationAnswer | undefined>(undefined);
   const [currentVerbAttempts, setCurrentVerbAttempts] = useState(0);
   const [error, setError] = useState<string>("");
   const updateGuess = (updateObj: any) => {
@@ -66,7 +66,7 @@ export const Conjugate = () => {
       // check correct answers
       const answerObj = Object.fromEntries(
         Object.entries(verb.conjugations).map(([key, value]) => {
-          return [[key], guess[key] === value];
+          return [[key], guess[key as keyof Conjugations] === value];
         })
       );
       setAnswerObj(answerObj);
@@ -175,17 +175,19 @@ export const Conjugate = () => {
                             [key]: e.target.value.toLowerCase(),
                           })
                         }
-                        value={guess[key]}
+                        value={guess[key as keyof Conjugations]}
                         autoComplete="off"
                       />
                     </Col>
                     <Col style={{ textAlign: "start" }}>
-                      {answerObj && !!answerObj[key] && (
-                        <p className="mt-2">✅</p>
-                      )}
-                      {answerObj && !answerObj[key] && (
-                        <p className="mt-2">❌</p>
-                      )}
+                      {answerObj &&
+                        !!answerObj[key as keyof ConjugationAnswer] && (
+                          <p className="mt-2">✅</p>
+                        )}
+                      {answerObj &&
+                        !answerObj[key as keyof ConjugationAnswer] && (
+                          <p className="mt-2">❌</p>
+                        )}
                     </Col>
                   </Row>
                 );
