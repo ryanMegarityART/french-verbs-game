@@ -105,12 +105,17 @@ export const SignIn = () => {
           </span>
         </p>
       </div>
-      <div className="mt-3">
+      <div className="mt-3 p-3">
         <p>
           <span>
             Play as a guest?{" "}
-            <Button variant="info" type="button" onClick={handleGuest}>
-              try me!
+            <Button
+              variant="info"
+              type="button"
+              onClick={handleGuest}
+              style={{ color: "white" }}
+            >
+              Try Me!
             </Button>
           </span>
         </p>
