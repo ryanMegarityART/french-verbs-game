@@ -1,6 +1,6 @@
 # French Verbs Game
 
-## Game Rules
+## Translate Game Rules
 The game will display a French word, the player needs to enter the English translation of this word.
 
 They will be provided with two additional pieces of information:
@@ -41,7 +41,7 @@ GOOGLE_TRANSLATE_API_KEY=""
 TOKEN_KEY="LOCALKEY"
 ```
 
-Note: you will need to obtain an API key to use the Google Translate API, this can be provided on request if needed 
+Note: you will need to obtain an API key to use the Google Translate API.
 
 frontend .env:
 
