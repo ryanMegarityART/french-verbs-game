@@ -93,7 +93,7 @@ frontend:
 
 My current frontend build-tool of choice is Vite which I have used to initalise a React + TypeScript frontend
 
-I have added react-bootstrap to the project for easy styling since the UI/UX is not the highest priority in this project
+I have added react-bootstrap to the project as my component styling library of choice
 
 backend:
 
@@ -103,14 +103,16 @@ I am using a mySQL database since it's free yet fully featured and easy to setup
 
 I opted for a relational database as I decided early on that I would be creating a leaderboard and running queries joining multiple tables to view this
 
-To view and query the database I use mySQL Workbench
+It also seems unlikely that this prject will require the high availabilty and sharding benefit of noSQL databases
+
+To view and query the database locally I use mySQL Workbench
 
 I have added Prisma as my ORM library (this is actually my first time using it, I have previously used TypeORM and not found it particularly great)
 
 deployment:
 
-I initially wanted to deploy as a serverless backend but ran into a few issues using AWS Lambdas with Prisma (due to the bundle size of the prisma client), in hindsight using DynamoDB and the AWS SDK would have made more sense for an AWS serverless deployment.
-
-I instead opted to use Heroku with a mySQL addon to deploy the backend
+I opted to use Heroku to deploy the backend
 
 The frontend is deployed using Vercel
+
+The entire deployment process is hooked up to the GitHub main branch and automated
