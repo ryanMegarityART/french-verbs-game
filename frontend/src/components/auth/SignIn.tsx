@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
@@ -20,32 +20,45 @@ export const SignIn = () => {
     }
   }, [user]);
 
-  const signIn = async (e: FormEvent<HTMLFormElement>) => {
+  const signIn = useCallback(
+    async (isGuest: boolean = false) => {
+      const response = await fetch(import.meta.env.VITE_ENDPOINT + "/login", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: isGuest
+          ? JSON.stringify({ email: "guest", password: "" })
+          : JSON.stringify({
+              email,
+              password,
+            }),
+      });
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.log("errorMessage: ", errorMessage);
+        return setError(errorMessage);
+      }
+      const userResp = await response.json();
+      setUser(userResp);
+      localStorage.setItem("user", JSON.stringify(userResp));
+      navigate("/play");
+    },
+    [email, password]
+  );
+
+  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch(import.meta.env.VITE_ENDPOINT + "/login", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({
-        email,
-        password,
-      }), // body data type must match "Content-Type" header
-    });
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      console.log("errorMessage: ", errorMessage);
-      return setError(errorMessage);
-    }
-    const userResp = await response.json();
-    setUser(userResp);
-    localStorage.setItem("user", JSON.stringify(userResp));
-    navigate("/play");
+    signIn();
+  };
+
+  const handleGuest = () => {
+    signIn(true);
   };
 
   return (
@@ -56,7 +69,7 @@ export const SignIn = () => {
       </h1>
       <div className="m-3"></div>
       {error && <ErrorAlert errorMessage={error} />}
-      <Form className="mt-3" onSubmit={signIn}>
+      <Form className="mt-3" onSubmit={handleLogin}>
         <Form.Group className="m-3" controlId="formBasicEmail">
           <Form.Control
             type="email"
@@ -89,6 +102,16 @@ export const SignIn = () => {
             <a style={{ color: "blue", cursor: "pointer" }} href="/register">
               register here
             </a>
+          </span>
+        </p>
+      </div>
+      <div className="mt-3">
+        <p>
+          <span>
+            Play as a guest?{" "}
+            <Button variant="info" type="button" onClick={handleGuest}>
+              try me!
+            </Button>
           </span>
         </p>
       </div>

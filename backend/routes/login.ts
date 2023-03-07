@@ -9,14 +9,30 @@ export const login = express.Router();
 login.post("/", async (req, res) => {
 
     console.log("login body: ", req.body)
-    const prisma = new PrismaClient();
 
     // Get user input
     const { email, password } = req.body;
 
+    if (email === "guest") {
+        // Create token
+        const token = jwt.sign(
+            { email },
+            process.env.TOKEN_KEY || "",
+            {
+                expiresIn: "2h",
+            }
+        );
+
+        // user
+        return res.status(200).json({ email, token });
+    }
+
+    const prisma = new PrismaClient();
+
     // Validate user input
     if (!(email && password)) {
-        res.status(400).send("All input is required");
+        console.log("input missing")
+        return res.status(400).send("All input is required");
     }
 
     // Validate if user exist in our database
