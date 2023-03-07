@@ -11,6 +11,7 @@ import { GameWin } from "./GameWin";
 import { Score } from "./Score";
 import { transationHintString } from "../helpers/translation";
 import { postAttempt } from "./shared/postAttempt";
+import { User } from "../Root";
 
 interface VerbResponse {
   verb: string;
@@ -21,9 +22,10 @@ const SUBMIT_TIMEOUT = 2500;
 
 export const GuessVerb = () => {
   const navigate = useNavigate();
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
-
+  const [user, setUser] =
+    useOutletContext<
+      [User, React.Dispatch<React.SetStateAction<User | undefined>>]
+    >();
   const [verb, setVerb] = useState<string>("");
   const [translation, setTranslation] = useState<string>("");
   const [error, setError] = useState<string>("");

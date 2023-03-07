@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { checkAuthenticationResponse } from "../helpers/token";
+import { User } from "../Root";
 
 interface Leaderboard {
   numberCorrect: number;
@@ -9,8 +10,7 @@ interface Leaderboard {
 }
 
 export const Leaderboard = () => {
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
+  const [user, setUser] = useOutletContext<[User, React.Dispatch<React.SetStateAction<User | undefined>>]>();
   const [error, setError] = useState<string>("");
   const [leaderboard, setLeaderboard] = useState<Leaderboard[]>();
   const navigate = useNavigate();

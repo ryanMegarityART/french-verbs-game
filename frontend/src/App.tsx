@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import { useOutletContext, useLocation } from "react-router-dom";
+import { User } from "./Root";
 
 function App() {
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
+  const [user, setUser] = useOutletContext<[User, React.Dispatch<React.SetStateAction<User | undefined>>]>();
   const location = useLocation();
 
   return (

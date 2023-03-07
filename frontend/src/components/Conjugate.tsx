@@ -2,6 +2,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { checkAuthenticationResponse } from "../helpers/token";
+import { User } from "../Root";
 import { ErrorAlert } from "./shared/ErrorAlert";
 import { postAttempt } from "./shared/postAttempt";
 import { SuccessAlert } from "./shared/SuccessAlert";
@@ -41,8 +42,7 @@ export const BLANK_GUESS = {
 
 export const Conjugate = () => {
   const navigate = useNavigate();
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
+  const [user, setUser] = useOutletContext<[User, React.Dispatch<React.SetStateAction<User | undefined>>]>();
   const [guess, setGuess] = useState<Conjugations>(BLANK_GUESS);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);

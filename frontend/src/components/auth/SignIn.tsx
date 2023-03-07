@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import frenchFlag from "../../assets/french-flag.svg";
 import { ErrorAlert } from "../shared/ErrorAlert";
+import { User } from "../../Root";
 
 export const SignIn = () => {
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
+  const [user, setUser] = useOutletContext<[User, React.Dispatch<React.SetStateAction<User | undefined>>]>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

@@ -7,13 +7,13 @@ import { BLANK_GUESS } from "./Conjugate";
 import { ErrorAlert } from "./shared/ErrorAlert";
 import FadeLoader from "react-spinners/FadeLoader";
 import { SuccessAlert } from "./shared/SuccessAlert";
+import { User } from "../Root";
 
 const WindowedSelect = (WS as any).default ? (WS as any).default : WS;
 
 export const AddConjugationVerb = () => {
   const navigate = useNavigate();
-  // @ts-ignore
-  const [user, setUser] = useOutletContext();
+  const [user, setUser] = useOutletContext<[User, React.Dispatch<React.SetStateAction<User | undefined>>]>();
   const [verbOptions, setVerbOptions] = useState();
   const [tenseOptions, setTenseOptions] = useState();
   const [selectedVerb, setSelectedVerb] = useState<any>();
