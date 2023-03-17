@@ -56,6 +56,7 @@ export const Chat: FC = () => {
         },
       });
       if (!resp.ok) {
+        setLoading(false);
         return await checkAuthenticationResponse(
           resp,
           setUser,
