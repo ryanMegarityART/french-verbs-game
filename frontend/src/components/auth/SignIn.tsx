@@ -65,7 +65,7 @@ export const SignIn = () => {
     <div className="vertical-center">
       <h1 style={{ width: "90vw", marginBottom: "3em" }}>
         <img src={frenchFlag} className="logo" alt="french flag" />
-        French Verbs Game
+        francais-GPT
       </h1>
       <div className="m-3"></div>
       {error && <ErrorAlert errorMessage={error} />}

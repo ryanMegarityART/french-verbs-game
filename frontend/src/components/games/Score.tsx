@@ -1,11 +1,11 @@
-import React from "react";
+import React, { FC } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 
 export interface ScoreProps {
   score: number;
 }
 
-export const Score = ({ score }: ScoreProps) => {
+export const Score: FC<ScoreProps> = ({ score }) => {
   return (
     <div className="m-3">
       <ProgressBar>

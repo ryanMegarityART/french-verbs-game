@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { checkAuthenticationResponse } from "../helpers/token";
-import { User } from "../Root";
+import { checkAuthenticationResponse } from "../../helpers/token";
+import { User } from "../../Root";
 
 interface Leaderboard {
   numberCorrect: number;

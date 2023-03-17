@@ -1,11 +1,11 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { checkAuthenticationResponse } from "../helpers/token";
-import { User } from "../Root";
-import { ErrorAlert } from "./shared/ErrorAlert";
-import { postAttempt } from "./shared/postAttempt";
-import { SuccessAlert } from "./shared/SuccessAlert";
+import { checkAuthenticationResponse } from "../../helpers/token";
+import { User } from "../../Root";
+import { ErrorAlert } from "../shared/ErrorAlert";
+import { postAttempt } from "../shared/postAttempt";
+import { SuccessAlert } from "../shared/SuccessAlert";
 
 interface ConjugationVerb {
   infinitive: string;

@@ -1,17 +1,17 @@
 import React, { CSSProperties, FormEvent, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { SuccessAlert } from "./shared/SuccessAlert";
-import { ErrorAlert } from "./shared/ErrorAlert";
+import { SuccessAlert } from "../shared/SuccessAlert";
+import { ErrorAlert } from "../shared/ErrorAlert";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { checkAuthenticationResponse } from "../helpers/token";
+import { checkAuthenticationResponse } from "../../helpers/token";
 import { FadeLoader } from "react-spinners";
 import { GameOver } from "./GameOver";
 import { GameWin } from "./GameWin";
 import { Score } from "./Score";
-import { transationHintString } from "../helpers/translation";
-import { postAttempt } from "./shared/postAttempt";
-import { User } from "../Root";
+import { transationHintString } from "../../helpers/translation";
+import { postAttempt } from "../shared/postAttempt";
+import { User } from "../../Root";
 
 interface VerbResponse {
   verb: string;

@@ -1,13 +1,13 @@
 import React, { Component, CSSProperties, useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { checkAuthenticationResponse } from "../helpers/token";
+import { checkAuthenticationResponse } from "../../helpers/token";
 import WS from "react-windowed-select";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { BLANK_GUESS } from "./Conjugate";
-import { ErrorAlert } from "./shared/ErrorAlert";
+import { ErrorAlert } from "../shared/ErrorAlert";
 import FadeLoader from "react-spinners/FadeLoader";
-import { SuccessAlert } from "./shared/SuccessAlert";
-import { User } from "../Root";
+import { SuccessAlert } from "../shared/SuccessAlert";
+import { User } from "../../Root";
 
 const WindowedSelect = (WS as any).default ? (WS as any).default : WS;
 

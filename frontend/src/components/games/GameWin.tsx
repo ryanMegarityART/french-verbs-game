@@ -1,8 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-export const GameOver = ({ handleClose }: any) => {
+interface GameWinProps {
+  handleClose: () => void;
+}
+
+export const GameWin: FC<GameWinProps> = ({ handleClose }) => {
   return (
     <Modal
       show={true}
@@ -13,11 +17,11 @@ export const GameOver = ({ handleClose }: any) => {
       animation={true}
     >
       <Modal.Header>
-        <Modal.Title>Game Over! 💀</Modal.Title>
+        <Modal.Title>Game Won! 🎉</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <p>You ran out of points.</p>
+        <p>You accumulated 20 points, well done!</p>
       </Modal.Body>
 
       <Modal.Footer>
