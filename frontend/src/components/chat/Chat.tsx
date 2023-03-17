@@ -7,6 +7,7 @@ import { checkAuthenticationResponse } from "../../helpers/token";
 import { User } from "../../Root";
 import FadeLoader from "react-spinners/FadeLoader";
 import AudioRecord from "./AudioRecord";
+import { ErrorAlert } from "../shared/ErrorAlert";
 
 const override: CSSProperties = {
   display: "block",
@@ -26,7 +27,6 @@ export const Chat: FC = () => {
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState("#0066ff");
   const [audioBlob, setAudioBlob] = useState(""); //base-64
-
   //   setTimeout(() => {
   //     setStringsToType((x) => [...x, "hi"]);
   //   }, 2000);
@@ -72,6 +72,7 @@ export const Chat: FC = () => {
       setAudioBlob("");
     }
     console.log("ended");
+    setError("");
     setLoading(false);
   };
 
@@ -97,6 +98,7 @@ export const Chat: FC = () => {
           aria-label="Loading Spinner"
           data-testid="loader"
         />
+        {error && <ErrorAlert errorMessage={error} />}
         {stringsToType.map((string, i) => {
           return (
             <TypewriterComponent
