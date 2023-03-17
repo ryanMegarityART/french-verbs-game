@@ -32,7 +32,7 @@ chat.get("/", authenticateToken, async (req, res) => {
 });
 
 chat.post("/prompt", authenticateToken, async (req, res) => {
-  console.log(`prompt: '${JSON.stringify(req.body)}' received...`);
+  console.log(`prompt type: '${JSON.stringify(req.body.type)}' received...`);
   if (!req.body.type) {
     console.log(req.body.type || "no type");
     return res.sendStatus(400);
