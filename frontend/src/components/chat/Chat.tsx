@@ -137,6 +137,7 @@ export const Chat: FC = () => {
                   e.preventDefault;
                   getChat();
                 }}
+                disabled={!audioBlob && !chatPrompt}
               >
                 Submit
               </Button>
