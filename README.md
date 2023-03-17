@@ -1,4 +1,15 @@
-# French Verbs Game
+# francais-GPT
+
+## The goal
+To use the newest, cutting edge openai APIs to create a useful chatbot to assist with learning french.
+
+So far this uses GPT3.5-turbo and the whisper-1 APIs
+
+try it out here - https://francais-gpt.vercel.app/chat
+
+Deployed using Vercel and Heroku
+
+This app was initially just created as a conjugation game, the rules are below.
 
 ## Translate Game Rules
 The game will display a French word, the player needs to enter the English translation of this word.
@@ -15,11 +26,6 @@ If a player reaches 0 points they lose
 
 If a player reaches 20 points they win
 
-## Live Deployment
-
-https://french-verbs-game.vercel.app/
-
-Deployed using Vercel for the frontend and Heroku for the backend
 
 ## Install and Setup
 
