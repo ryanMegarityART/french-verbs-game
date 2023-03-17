@@ -6,6 +6,7 @@ import TypewriterComponent from "typewriter-effect";
 import { checkAuthenticationResponse } from "../../helpers/token";
 import { User } from "../../Root";
 import FadeLoader from "react-spinners/FadeLoader";
+import AudioRecord from "./AudioRecord";
 
 const override: CSSProperties = {
   display: "block",
@@ -13,14 +14,18 @@ const override: CSSProperties = {
   borderColor: "red",
 };
 
+interface PromptBody {
+  type: "text" | "audio";
+  prompt: string;
+}
+
 export const Chat: FC = () => {
   const [stringsToType, setStringsToType] = useState<string[]>([]);
   const [typedStrings, setTypedStrings] = useState<string[]>([]);
-  const [chatPrompt, setChatPrompt] = useState(
-    "Hello! Can you assist me with learning french? (please respond to prompts in french)"
-  );
+  const [chatPrompt, setChatPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState("#0066ff");
+  const [audioBlob, setAudioBlob] = useState(""); //base-64
 
   //   setTimeout(() => {
   //     setStringsToType((x) => [...x, "hi"]);
@@ -36,18 +41,20 @@ export const Chat: FC = () => {
   const getChat = async () => {
     console.log("triggered");
     setLoading(true);
-    if (user && chatPrompt) {
+    if (user && (chatPrompt || audioBlob)) {
       console.log("user exists");
-      const resp = await fetch(
-        import.meta.env.VITE_ENDPOINT + "/chat" + `?chatPrompt=${chatPrompt}`,
-        {
-          method: "GET",
-          headers: {
-            Authentication: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const body: PromptBody = {
+        type: chatPrompt ? "text" : "audio",
+        prompt: chatPrompt ? chatPrompt : audioBlob,
+      };
+      const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/chat/prompt", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          Authentication: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      });
       if (!resp.ok) {
         return await checkAuthenticationResponse(
           resp,
@@ -61,6 +68,7 @@ export const Chat: FC = () => {
       setTypedStrings((x) => [...x, chatPrompt]);
       setStringsToType([respJSON.choices[0].message.content!]);
       setChatPrompt("");
+      setAudioBlob("");
     }
     console.log("ended");
     setLoading(false);
@@ -91,17 +99,6 @@ export const Chat: FC = () => {
         {stringsToType.map((string, i) => {
           return (
             <TypewriterComponent
-              // onInit={(typewriter) => {
-              //   typewriter
-              //     .changeDelay(75)
-              //     .typeString(string)
-              //     .pauseFor(2500)
-              //     .callFunction(() => {
-              //       setStringsToType([]);
-              //     })
-              //     .start();
-              // }}
-
               options={{
                 strings: [string],
                 autoStart: true,
@@ -119,11 +116,14 @@ export const Chat: FC = () => {
       </div>
       <div className="mt-3">
         {!loading && (
-          <Row>
-            <Col md={10}>
+          <Row style={{ marginTop: "5em" }}>
+            <Col md={6}>
+              <AudioRecord blob={audioBlob} setBlob={setAudioBlob} />
+            </Col>
+            <Col md={4}>
               <Form.Control
                 type="text"
-                placeholder=""
+                placeholder="what would you like to ask?"
                 required={true}
                 className="conjugation-text-box"
                 onChange={(e) => setChatPrompt(e.target.value)}
@@ -131,14 +131,14 @@ export const Chat: FC = () => {
                 autoComplete="off"
               />
             </Col>
-            <Col>
+            <Col md={2}>
               <Button
                 onClick={(e) => {
                   e.preventDefault;
                   getChat();
                 }}
               >
-                ➡️
+                Submit
               </Button>
             </Col>
           </Row>
