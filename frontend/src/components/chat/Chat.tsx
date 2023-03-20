@@ -1,6 +1,6 @@
 import { CreateChatCompletionResponse } from "openai";
 import React, { CSSProperties, FC, useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import TypewriterComponent from "typewriter-effect";
 import { checkAuthenticationResponse } from "../../helpers/token";
@@ -21,15 +21,14 @@ interface PromptBody {
 }
 
 export const Chat: FC = () => {
-  const [stringsToType, setStringsToType] = useState<string[]>([]);
+  const [stringsToType, setStringsToType] = useState<string[]>([
+    "Je suis prêt à vous aider. Comment puis-je vous aider à apprendre le français?",
+  ]);
   const [typedStrings, setTypedStrings] = useState<string[]>([]);
   const [chatPrompt, setChatPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState("#0066ff");
   const [audioBlob, setAudioBlob] = useState(""); //base-64
-  //   setTimeout(() => {
-  //     setStringsToType((x) => [...x, "hi"]);
-  //   }, 2000);
 
   const [user, setUser] =
     useOutletContext<
@@ -81,13 +80,22 @@ export const Chat: FC = () => {
   }, []);
 
   return (
-    <Container>
-      <h2>parlez avec moi 🤖</h2>
+    <Container className="p-3">
+      {/* <h2>parlez avec moi 🤖</h2> */}
       {typedStrings.map((string, i) => {
         return (
-          <p key={`${string}_${i}`} style={{ fontWeight: "1.5em" }}>
-            {string}
-          </p>
+          <Card
+            key={`${string}_${i}`}
+            style={{
+              marginLeft: i % 2 !== 0 ? "25vw" : 0,
+              marginRight: i % 2 !== 0 ? "0" : "25vw",
+              backgroundColor:
+                i % 2 !== 0 ? "rgba(0, 255, 0, 0.2)" : "rgba(0, 0, 255, 0.2)",
+              marginBottom: "2em",
+            }}
+          >
+            <Card.Body style={{ fontWeight: "1.5em" }}>{string}</Card.Body>
+          </Card>
         );
       })}
       <div className="mb-3" style={{ fontFamily: "monospace" }}>
@@ -121,18 +129,18 @@ export const Chat: FC = () => {
         {!loading && (
           <Row style={{ marginTop: "5em" }}>
             <Col md={6}>
-              <AudioRecord blob={audioBlob} setBlob={setAudioBlob} />
-            </Col>
-            <Col md={4}>
               <Form.Control
                 type="text"
-                placeholder="what would you like to ask?"
+                placeholder="type or record a question..."
                 required={true}
                 className="conjugation-text-box"
                 onChange={(e) => setChatPrompt(e.target.value)}
                 value={chatPrompt}
                 autoComplete="off"
               />
+            </Col>
+            <Col md={4}>
+              <AudioRecord blob={audioBlob} setBlob={setAudioBlob} />
             </Col>
             <Col md={2}>
               <Button

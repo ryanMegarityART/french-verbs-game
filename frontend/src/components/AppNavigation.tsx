@@ -8,7 +8,7 @@ import { NavDropdown } from "react-bootstrap";
 
 export const AppNavigation = () => {
   return (
-    <Navbar expand={false}>
+    <Navbar bg="dark" variant="dark" expand={false}>
       <Container>
         <Navbar.Brand>
           <img src={frenchFlag} className="logo" alt="french flag" />

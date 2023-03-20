@@ -3,17 +3,12 @@
   text-align: center;
 }
 
-body {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
-}
-
 .app {
-  padding: 0.75em;
+  padding: 1em;
 }
 
 .logo {
-  height: 1.25em;
+  height: 1.5em;
   will-change: filter;
   margin-right: 1em;
 }

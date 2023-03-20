@@ -8,10 +8,11 @@ import { Leaderboard } from "./components/games/Leaderboard";
 import { Register } from "./components/auth/Register";
 import { Root } from "./Root";
 import { GuessVerb } from "./components/games/GuessVerb";
-import "./App.css";
 import { Conjugate } from "./components/games/Conjugate";
 import { AddConjugationVerb } from "./components/games/AddConjugationVerb";
 import { Chat } from "./components/chat/Chat";
+import "bootswatch/dist/slate/bootstrap.min.css";
+import "./main.css";
 
 const router = createBrowserRouter([
   {
