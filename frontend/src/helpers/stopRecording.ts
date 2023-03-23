@@ -28,7 +28,7 @@ export const stopRecording = ({
             // setBlob(file)
             setIsRecording(false);
             const base64String = await blobToBase64(blob);
-            console.log(base64String);
+            // console.log(base64String);
             setBlob(base64String);
         })
         .catch((e: any) => console.log(e));

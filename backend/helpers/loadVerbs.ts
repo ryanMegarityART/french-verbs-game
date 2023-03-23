@@ -7,14 +7,6 @@ fs.readFile(filePath, { encoding: 'utf-8' }, async (err, data) => {
     if (!err) {
         const prisma = new PrismaClient();
 
-        // Logic to limit to 500
-        // const numberOfVerbsAlreadyInDB = await prisma.verb.count();
-        // if (numberOfVerbsAlreadyInDB >= 500) {
-        //     console.log("500 verbs already loaded in db")
-        //     await prisma.$disconnect()
-        //     return res.send("500 verbs already loaded in db");
-        // }
-
         // split list on new line 
         const verbsToAdd = data.split(/\r?\n/);
         const added = [];

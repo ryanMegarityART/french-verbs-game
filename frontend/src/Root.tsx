@@ -22,7 +22,7 @@ export const Root = () => {
         return setUser(JSON.parse(userCache));
       }
       if (location.pathname != "/register") {
-        navigate("/sign-in");
+        return navigate("/sign-in");
       }
     }
   }, [user]);

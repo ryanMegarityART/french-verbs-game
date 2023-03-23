@@ -55,16 +55,21 @@ export const AppNavigation = () => {
               </div>
             </div>
             <hr />
-            <Nav.Link
-              style={{ color: "red", fontSize: "1.5em" }}
-              className="mt-3"
-              onClick={() => {
-                localStorage.removeItem("user");
-              }}
-              href={`/`}
-            >
-              Sign Out 👋
-            </Nav.Link>
+            <div style={{ fontSize: "1.5em" }} className="mb-1">
+              Account 👩‍💼
+            </div>
+            <div className="m-2">
+              <Nav.Link
+                style={{ color: "red" }}
+                className="mt-3"
+                onClick={() => {
+                  localStorage.removeItem("user");
+                }}
+                href={`/`}
+              >
+                Sign Out 👋
+              </Nav.Link>
+            </div>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>

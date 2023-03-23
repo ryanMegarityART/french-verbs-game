@@ -36,7 +36,7 @@ const AudioRecord: FC<AudioRecordProps> = ({ blob, setBlob }) => {
     newVariable.getUserMedia(
       { audio: true },
       () => {
-        console.log("Permission Granted");
+        // console.log("Permission Granted");
         setIsBlocked(false);
       },
       () => {

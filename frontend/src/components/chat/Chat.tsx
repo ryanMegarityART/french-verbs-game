@@ -1,13 +1,11 @@
-import { CreateChatCompletionResponse } from "openai";
-import React, { CSSProperties, FC, useEffect, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import TypewriterComponent from "typewriter-effect";
-import { checkAuthenticationResponse } from "../../helpers/token";
 import { User } from "../../Root";
 import FadeLoader from "react-spinners/FadeLoader";
 import AudioRecord from "./AudioRecord";
 import { ErrorAlert } from "../shared/ErrorAlert";
+import { fetchChat } from "./chatService";
 
 const override: CSSProperties = {
   display: "block",
@@ -15,16 +13,10 @@ const override: CSSProperties = {
   borderColor: "red",
 };
 
-interface PromptBody {
-  type: "text" | "audio";
-  prompt: string;
-}
-
 export const Chat: FC = () => {
-  const [stringsToType, setStringsToType] = useState<string[]>([
+  const [typedStrings, setTypedStrings] = useState<string[]>([
     "Je suis prêt à vous aider. Comment puis-je vous aider à apprendre le français?",
   ]);
-  const [typedStrings, setTypedStrings] = useState<string[]>([]);
   const [chatPrompt, setChatPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState("#0066ff");
@@ -37,47 +29,62 @@ export const Chat: FC = () => {
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const getChat = async () => {
-    console.log("triggered");
+  const getChat = useCallback(async () => {
+    if (!user) return;
+
     setLoading(true);
-    if (user && (chatPrompt || audioBlob)) {
-      console.log("user exists");
-      const body: PromptBody = {
-        type: chatPrompt ? "text" : "audio",
-        prompt: chatPrompt ? chatPrompt : audioBlob,
-      };
-      const resp = await fetch(import.meta.env.VITE_ENDPOINT + "/chat/prompt", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authentication: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!resp.ok) {
-        setLoading(false);
-        return await checkAuthenticationResponse(
-          resp,
+    setError("");
+    let promptBody = typedStrings;
+    if (audioBlob) {
+      try {
+        const audioRespJSON: any = await fetchChat(
+          "/chat/audio/transcribe",
+          "POST",
+          audioBlob,
+          user.token,
           setUser,
           setError,
           navigate
         );
+        console.log(audioRespJSON);
+        // setTypedStrings((t) => [...t, audioRespJSON.text]);
+        promptBody.push(audioRespJSON.text);
+      } catch (e: any) {
+        console.log(e);
+        setChatPrompt("");
+        setAudioBlob("");
+        setError(e.message);
+        return;
       }
-      const respJSON: any = await resp.json();
-      console.log(respJSON, respJSON.choices[0].message.content);
-      setTypedStrings((x) => [...x, chatPrompt]);
-      setStringsToType([respJSON.choices[0].message.content!]);
-      setChatPrompt("");
-      setAudioBlob("");
+    } else if (chatPrompt) {
+      console.log("here");
+      // setTypedStrings((x) => [...x, chatPrompt]);
+      promptBody.push(chatPrompt);
     }
-    console.log("ended");
+
+    const chatRespJSON: any = await fetchChat(
+      "/chat/prompt",
+      "POST",
+      promptBody,
+      user.token,
+      setUser,
+      setError,
+      navigate
+    );
+    console.log(chatRespJSON.choices[0].message.content!);
+    setTypedStrings((t) => {
+      console.log(t);
+      return [...t, chatRespJSON.choices[0].message.content!];
+    });
+    setChatPrompt("");
+    setAudioBlob("");
     setError("");
     setLoading(false);
-  };
+  }, [user, chatPrompt, audioBlob, typedStrings, setUser, navigate]);
 
-  useEffect(() => {
-    getChat();
-  }, []);
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <Container className="p-3">
@@ -107,23 +114,6 @@ export const Chat: FC = () => {
           data-testid="loader"
         />
         {error && <ErrorAlert errorMessage={error} />}
-        {stringsToType.map((string, i) => {
-          return (
-            <TypewriterComponent
-              options={{
-                strings: [string],
-                autoStart: true,
-                delay: 75,
-                loop: false,
-                onRemoveNode: () => {
-                  setStringsToType([]);
-                  setTypedStrings((t) => [...typedStrings, string]);
-                },
-              }}
-              key={`${string}_${i}`}
-            />
-          );
-        })}
       </div>
       <div className="mt-3">
         {!loading && (
@@ -145,7 +135,6 @@ export const Chat: FC = () => {
             <Col md={2}>
               <Button
                 onClick={(e) => {
-                  e.preventDefault;
                   getChat();
                 }}
                 disabled={!audioBlob && !chatPrompt}
